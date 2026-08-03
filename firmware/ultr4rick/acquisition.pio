@@ -22,7 +22,10 @@ static inline void u4rk_adc_program_init(PIO pio, uint sm, uint offset,
     sm_config_set_in_pins(&config, U4RK_ADC_CLOCK_PIN);
     sm_config_set_sideset_pins(&config, U4RK_ADC_CLOCK_PIN);
     sm_config_set_in_shift(&config, false, true, 16);
-    sm_config_set_fifo_join(&config, PIO_FIFO_JOIN_RX);
+    /* Keep both FIFOs: TX supplies the N-1 loop count to `pull block`, while
+     * RX carries captured samples to DMA. Joining RX would disable TX and
+     * leave the state machine permanently blocked at the first instruction. */
+    sm_config_set_fifo_join(&config, PIO_FIFO_JOIN_NONE);
     sm_config_set_clkdiv(&config,
         (float)clock_get_hz(clk_sys) / instruction_hz);
 

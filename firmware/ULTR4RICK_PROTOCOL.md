@@ -1,7 +1,8 @@
 # Ultr4rick RP2350B firmware test guide
 
 This guide covers testing the installed Ultr4rick signal-processing firmware.
-It assumes that `adc-pulse.uf2` has already been built and loaded.
+It assumes that the included `ultr4rick-envelope.uf2` (or the equivalent
+`build/adc-pulse.uf2` produced by VS Code) has already been loaded.
 
 ## What this firmware implements
 
@@ -78,7 +79,8 @@ python tools/ultr4rick_capture.py --port COM7 --selftest --output captures/selft
 
 The utility sends `dsp selftest` automatically. No command needs to be entered
 manually. The firmware returns raw, float-envelope, and A-law frames for each
-of these seven deterministic signals:
+of these seven deterministic signals. Before starting, the utility checks that
+the board reports firmware `1.5`; an older UF2 is rejected.
 
 1. Zero
 2. DC
@@ -174,40 +176,51 @@ Supported rate limits are:
 | --- | ---: |
 | Raw `uint16` | 1–100 Hz |
 | Float envelope | 1–50 Hz |
-| A-law `uint8` | 1–200 Hz |
+| A-law `uint8` | 1–70 Hz |
 
 Rates above these limits are rejected.
 
-Run the required 60-second, 200 Hz A-law test:
+The original 200 Hz A-law requirement is **not met by the exact 4,096-sample
+Hilbert implementation**. The same Cortex-M33/FPU pipeline measured about
+12.98 ms worst case on a Pico 2 W (RP2350A), so the firmware uses a conservative
+70 Hz limit rather than accepting an unsustainable rate and silently dropping
+frames. Reaching 200 Hz requires a different streaming envelope detector or a
+reduced transform/window; that would change the signal-processing design.
+
+Run a 60-second A-law stability test at the current exact-Hilbert limit:
 
 ```powershell
-python tools/ultr4rick_capture.py --port COM7 --mode alaw --rate 200 --frames 12000 --output captures/alaw-60s
+python tools/ultr4rick_capture.py --port COM7 --mode alaw --rate 70 --frames 4200 --timeout 30 --output captures/alaw-60s
 ```
 
 Reboot the board immediately before this acceptance test so the cumulative
 drop counter and worst-case timing start from a known state.
 
-The utility sends `stream start alaw 200`, receives 12,000 frames, sends
+The utility sends `stream start alaw 70`, receives 4,200 frames, sends
 `stream stop`, and requests final status. During streaming, the firmware emits
 only binary frames; normal command text is intentionally suppressed until the
 stream has stopped.
 
 Acceptance requires:
 
-- 12,000 frames received
+- 4,200 frames received
 - No CRC error
 - No sequence-gap error
 - `drops=0` on every displayed frame
 - `dropped_frames: 0` in every `headers.json` entry
 - Final `status.txt` reports `drops=0`
 
-`status.txt` also reports DSP stage timings and `worst_us`. For
-envelope-plus-A-law processing, acceptance requires:
+`status.txt` also reports the DSP backend, stage timings, and `worst_us`.
+`performance=ok` is reserved for the original 200 Hz timing target:
 
 ```text
 worst_us <= 4500
 performance=ok
 ```
+
+With the current exact-Hilbert backend, `performance=over-budget` is expected
+unless an on-board benchmark proves otherwise. The 70 Hz stability test still
+requires zero drops, sequence gaps, and CRC failures.
 
 The capture directory contains `alaw.npy`, `alaw_decoded.npy`,
 `headers.json`, and `status.txt`.
@@ -375,5 +388,5 @@ Payload formats:
 - Pulse durations are within one 8 ns PIO tick
 - DAC codes 0, 512, and 1023 are correct
 - Known external ADC signal produces the expected raw and envelope data
-- A-law 200 Hz stream runs for 60 seconds with zero drops, gaps, and CRC errors
-- Worst-case envelope-plus-A-law DSP time is no greater than 4.5 ms
+- A-law 70 Hz stream runs for 60 seconds with zero drops, gaps, and CRC errors
+- Measured `worst_us` is recorded; 4.5 ms/200 Hz remains an unmet optimization target

@@ -24,7 +24,7 @@
 #define CFG_TUD_MIDI 0
 #define CFG_TUD_VENDOR 0
 
-/* Larger software FIFOs are important for sustained 200 Hz A-law streaming. */
+/* Larger software FIFOs keep binary frame transmission non-blocking. */
 #define CFG_TUD_CDC_RX_BUFSIZE 512
 #define CFG_TUD_CDC_TX_BUFSIZE 2048
 #define CFG_TUD_CDC_EP_BUFSIZE 64

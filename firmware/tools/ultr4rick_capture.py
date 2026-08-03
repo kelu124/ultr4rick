@@ -22,6 +22,7 @@ HEADER = struct.Struct("<4sBBHIIIIQfffIIIII")
 PAYLOAD_NAMES = {1: "raw", 2: "envelope", 3: "alaw"}
 PAYLOAD_BYTES = {1: SAMPLE_COUNT * 2, 2: SAMPLE_COUNT * 4, 3: SAMPLE_COUNT}
 A_LAW_A = 87.6
+EXPECTED_FIRMWARE = "1.5"
 FLAG_SELFTEST = 1 << 3
 SELFTEST_CASE_SHIFT = 8
 SELFTEST_NAMES = (
@@ -88,7 +89,13 @@ class FrameReader:
 
     def _fill(self, needed: int) -> None:
         while len(self.buffer) < needed:
-            chunk = self.stream.read(max(self.read_size, needed - len(self.buffer)))
+            missing = needed - len(self.buffer)
+            # PySerial normally waits for the full requested byte count. Read
+            # exactly what is missing unless more bytes are already waiting;
+            # this avoids a timeout-sized pause after the final frame.
+            available = int(getattr(self.stream, "in_waiting", 0) or 0)
+            request_size = min(self.read_size, max(missing, available))
+            chunk = self.stream.read(request_size)
             if not chunk:
                 raise TimeoutError(f"timed out with {len(self.buffer)}/{needed} bytes")
             self.buffer.extend(chunk)
@@ -288,7 +295,18 @@ def validate_selftest(frames: list[Frame]) -> None:
             np.sqrt(np.mean((firmware_envelope - reference) ** 2)) / scale
         )
         firmware_peak = int(np.argmax(firmware_envelope))
-        reference_peak = int(np.argmax(reference))
+        # Several deterministic vectors have mathematically equal maxima.
+        # Accept any maximum tied at float32 precision, including circularly
+        # adjacent samples, instead of relying on one np.argmax choice.
+        peak_tolerance = max(scale * 1e-6, 1e-6)
+        reference_peak_candidates = np.flatnonzero(
+            reference >= float(np.max(reference)) - peak_tolerance
+        )
+        peak_distances = np.abs(reference_peak_candidates - firmware_peak)
+        peak_distances = np.minimum(
+            peak_distances, len(reference) - peak_distances
+        )
+        peak_delta = int(np.min(peak_distances))
 
         alaw_frame = case_frames[3]
         encoded_reference = alaw_encode(reference, alaw_frame.header.alaw_reference)
@@ -302,12 +320,12 @@ def validate_selftest(frames: list[Frame]) -> None:
         )
         print(
             f"{case_name:12s} nrms={normalized_rms:.3e} "
-            f"peak_delta={abs(firmware_peak-reference_peak)} "
+            f"peak_delta={peak_delta} "
             f"alaw_delta={alaw_error}"
         )
         if normalized_rms > 1e-4:
             failures.append(f"{case_name}: normalized RMS {normalized_rms:.3e}")
-        if abs(firmware_peak - reference_peak) > 1:
+        if peak_delta > 1:
             failures.append(f"{case_name}: peak index differs by more than one")
         if alaw_error > 1:
             failures.append(f"{case_name}: A-law differs by {alaw_error} levels")
@@ -341,10 +359,31 @@ def run(args: argparse.Namespace) -> int:
             "pyserial is required; install tools/requirements.txt"
         ) from exc
 
-    port = serial.Serial(args.port, 115200, timeout=args.timeout)
+    serial_options: dict[str, object] = {}
+    if sys.platform != "win32":
+        # Prevent ModemManager or a second terminal from sharing ttyACM while
+        # a binary frame sequence is active.
+        serial_options["exclusive"] = True
+    port = serial.Serial(
+        args.port, 115200, timeout=args.timeout, **serial_options
+    )
     try:
+        # Assert the conventional CDC terminal state and let Linux complete
+        # its ACM control requests before sending the first command.
+        port.dtr = True
+        time.sleep(0.2)
         port.reset_input_buffer()
         port.reset_output_buffer()
+
+        port.write(b"status\n")
+        port.flush()
+        status = read_response_line(port)
+        print(status)
+        if f"firmware={EXPECTED_FIRMWARE}" not in status:
+            raise RuntimeError(
+                f"expected firmware {EXPECTED_FIRMWARE}; flash the UF2 "
+                "included with this tool"
+            )
 
         if args.selftest:
             command = "dsp selftest"

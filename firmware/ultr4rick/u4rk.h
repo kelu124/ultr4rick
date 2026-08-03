@@ -14,6 +14,10 @@
 #define U4RK_RAW_BUFFER_COUNT         2u
 #define U4RK_OUTPUT_SLOT_COUNT        2u
 #define U4RK_ALAW_DEFAULT_REFERENCE   512.0f
+#define U4RK_RAW_MAX_RATE_HZ          100u
+#define U4RK_ENVELOPE_MAX_RATE_HZ     50u
+#define U4RK_ALAW_MAX_RATE_HZ         70u
+#define U4RK_DSP_TARGET_US            4500u
 
 #define U4RK_ADC_CLOCK_PIN            0u
 #define U4RK_ADC_DATA_FIRST_PIN       1u
@@ -56,6 +60,8 @@ typedef struct {
     uint8_t payload_type;
     uint16_t flags;
     uint32_t sequence;
+    /* Internal USB-session tag; it is not serialized in the wire header. */
+    uint32_t session_id;
     uint32_t sample_rate_hz;
     uint64_t capture_timestamp_us;
     float alaw_reference;
