@@ -62,7 +62,7 @@ a fix, a refactor or rename, a tooling/skill change.
 - The subject is `<area>: <what changed>` (areas: `firmware`, `python`, `hardware`, `repo`, `docs(claude)`). The
   body says why, and what was verified.
 - Each commit gets its own `.claude/commits/` note and CHANGELOG bullet, and its own patch bump per touched component.
-- Work on a branch off `main` (reuse the current feature branch). **Never commit to `main` directly and never push
+- Work on a branch off `main` (reuse the current feature branch if there is one, otherwise start a new one). **Never commit to `main` directly and never push
   or merge without being asked.**
 - Don't commit broken or unverified states. If a step can't be verified, say so in the commit body and the note.
 

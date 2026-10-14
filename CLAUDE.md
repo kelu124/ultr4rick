@@ -93,3 +93,15 @@ Log every change in `.claude/CHANGELOG.md`, with a per-commit note in `.claude/c
 / `.claude/DONE.md` current (`ultr4rick-changelog` skill). When committing, bump the patch of every component whose
 files changed (`ultr4rick-versioning` skill); major/minor belong to the maintainer. Commit after each major
 step on a branch off `main`; never commit to `main`, push or merge without being asked.
+
+## Working with the maintainer
+
+- Do the real thing: build, flash and test on the board attached to this machine (`/dev/ttyACM0`), and report the
+  measured numbers. An edit that hasn't been run on hardware isn't done; say so if you couldn't verify it.
+- Keep project know-how in this repo (`CLAUDE.md`, `.claude/skills/`, `.claude/TODO.md`), not only in private memory,
+  so any session can pick it up.
+- Branches: `main` is the integration branch. Start a new branch off `main` per piece of work; once it's merged and the
+  maintainer asks to trim, delete it locally and on `origin`.
+- Ask before killing processes you didn't start (e.g. a serial monitor from another session holding the port).
+- KiCad must be closed before moving or renaming anything under `hardware/`.
+- Related boards: pic0rick (RP2040, this firmware's ancestor) and we_gate (ECP5 FPGA) live in other repos.
