@@ -6,8 +6,8 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-14
 
-- `uncommitted` Run the firmware from SRAM (`copy_to_ram`). DSP time no longer depends on flash layout: envelope
-  13.4–20.3 ms -> 6.55 ms, worst with A-law 7.3 ms. Firmware 0.1.15. — [details](commits/2026-10-14-copy-to-ram.md)
+- `c797503` Run the firmware from SRAM (`copy_to_ram`). DSP time no longer depends on flash layout: envelope
+  13.4–20.3 ms -> 6.55 ms, worst with A-law 7.3 ms. Firmware 0.1.15. — [details](commits/2026-10-14-c797503.md)
 - `4cff792` LP5562 status LED on I2C0. The RGB LED shows the pipeline stage at 5% (white/green/yellow/blue/magenta/red),
   and W (LED2) is on while a host has the ttyACM open. `status` gains `led=`. `flash.sh` automount race fixed.
   Firmware 0.1.14. — [details](commits/2026-10-14-4cff792.md)
