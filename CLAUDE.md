@@ -5,71 +5,89 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 Ultr4rick is a higher-power successor to the pic0rick open ultrasound board. It is built on an **RP2350B**
-(48-GPIO package) with a 10-bit 60 MS/s ADC, a bipolar HV pulser, a SEPIC HV supply, a MUX, an MCP4812 DAC (AFE gain) and a uSD slot.
+(48-GPIO package) with a 10-bit 60 MS/s ADC (AD9215), an A/B-driven bipolar HV pulser, a SEPIC HV supply, a MAX14866
+HV mux, an MCP4812 DAC (AFE gain), an LP5562 RGB LED driver on I2C and a uSD slot.
 
-- `firmware/` is the Pico SDK C firmware: acquisition, Hilbert-envelope DSP and the USB CDC protocol.
-- `firmware/tools/ultr4rick_capture.py` is the host-side capture and self-test tool (numpy/scipy/pyserial).
-- `firmware/ULTR4RICK_PROTOCOL.md` is the authoritative test guide, command reference and binary frame format.
-- `hardware/` holds the KiCad project (schematic sheets per subsystem, PCB, gerbers). `hardware_v2/` is an untracked
-  working copy of the next revision.
+- `firmware/` is the Pico SDK C firmware for the RP2350B. It started as a fork of pic0rick 0.1.11 and identifies
+  as Ultr4rick: acquisition, pulser, DAC/mux, Hilbert-envelope DSP and the USB CDC protocol.
+  `firmware/PINMAP.md` is the source of truth for every GPIO.
+- `python/ultr4rick/` is the host library (serial driver, `U4RK` frame reader, self-test check, NDT analysis +
+  HDF5). Notebooks in `python/` write to `python/data/`. Dependencies are in the root `requirements.txt`.
+- `hardware/` holds the KiCad project for the v2 board (schematic sheets per subsystem, PCB, gerbers).
+- `TODO.md` (root) is the maintainer's hardware to-do list. `.claude/TODO.md` and `.claude/DONE.md` track Claude's work.
+
+The previous Ultr4rick 1.5 firmware, its `ULTR4RICK_PROTOCOL.md` and `tools/ultr4rick_capture.py`, and the v1
+hardware are in git history at `4da14a5`.
 
 ## Commands
 
-The build/flash and test procedures live in project skills under `.claude/skills/`:
+The procedures live in project skills under `.claude/skills/`:
 
-- `ultr4rick-build-flash`: configure, build and flash without sudo (`flash.sh`).
-- `ultr4rick-board-test`: serial CLI, DSP self-test, captures and the safety rules.
-- `ultr4rick-changelog`: the required change-logging convention (see below).
+- `ultr4rick-firmware`: pin map, pulser encoding, shared SPI bus, safety invariants, firmware layout.
+- `ultr4rick-build-flash`: build both variants and flash without sudo (`flash.sh`, which uses `reboot-dfu`).
+- `ultr4rick-board-test`: drive the board from `python/ultr4rick`: status, self-test, captures, streaming, safety.
+- `ultr4rick-changelog`: required change logging (`.claude/CHANGELOG.md`, `.claude/commits/`, `.claude/TODO.md`/`DONE.md`).
+- `ultr4rick-versioning`: firmware and Python `major.minor.patch` versions. Claude bumps the patch only.
 
 Short version:
 
 ```bash
 cd firmware && export PICO_SDK_PATH=$HOME/.pico-sdk/sdk/2.3.0
-cmake -S . -B build -G Ninja -DPICO_TOOLCHAIN_PATH=/usr && ninja -C build   # -> build/adc-pulse.uf2
-../.claude/skills/ultr4rick-build-flash/flash.sh --no-build
+./build.sh -DPICO_TOOLCHAIN_PATH=/usr    # -> dist/ultr4rick-v<ver>-{ultr4rick,ultr4rick-dsp}.uf2
+../.claude/skills/ultr4rick-build-flash/flash.sh --no-build    # flashes the DSP build
 ```
 
-There are no unit tests. The DSP is verified **on hardware** with `ultr4rick_capture.py --selftest`, which compares
-the board's output against `scipy.signal.hilbert`.
+There are no unit tests. The DSP is verified **on hardware**: `Ultr4rick.selftest()` + `dsp.check_selftest()`
+compare the board's envelope with `scipy.signal.hilbert` (pass at normalized RMS ≤ 1e-4).
 
-## Firmware architecture (`firmware/ultr4rick/`)
+## Firmware architecture (`firmware/`)
 
-The firmware is dual-core and fixed at 4096 samples per frame. The shared constants and pin map are in `u4rk.h`.
+There are two build variants of the same hardware layer, selected by `-DDSP`:
 
-- **Core 0** (`main.c`) runs a cooperative superloop: TinyUSB task, command-line parsing, stream scheduling,
-  capture polling and frame output. No other task should block it. USB writes are async
-  (`usb_transport.c`). A USB disconnect cancels the session. Jobs and frames carry a `session_id`, so stale
-  work from a closed host connection is dropped rather than sent.
-- **Acquisition** (`acquisition.c` + `acquisition.pio`): PIO generates the 60 MHz ADC clock on GPIO0 and samples
-  D0–D9 on GPIO1–10. DMA moves the samples into one of two raw buffers. `pulser.pio` drives GPIO27/28
-  (P+/PDAMP) with 8 ns tick resolution, synchronised with the capture start.
-- **Core 1** (`pipeline.c`) runs `process_job` from a `job_queue`. It unpacks the raw data, then runs the DSP and writes the header plus
-  CRC32 into one of 2 output slots, which go back to core 0 via `output_ready_queue`. Back-pressure is handled by counting
-  drops (processing or USB), never by blocking. The drop counts are reported in every header.
-- **DSP** (`dsp.c`): CMSIS-DSP `arm_rfft_fast_f32` forward transform, analytic-signal mask, inverse transform, magnitude, then
-  optional A-law (A=87.6) against a runtime reference. Only the float32 transform sources of CMSIS-DSP are
-  compiled (`cmsisdsp_u4rk` in CMakeLists). Don't link the whole library.
-- **Protocol** (`protocol.c`): a fixed 64-byte little-endian header (`U4RK` magic). If you change it, update
-  `ULTR4RICK_PROTOCOL.md` and `tools/ultr4rick_capture.py` too, and bump the firmware version: the host tool checks
-  for `1.5` exactly (`pico_set_program_version` in CMakeLists).
+- **stdio** (`main.c`, default): single-threaded SDK `stdio_usb` text REPL (`start acq`, `read`, `write dac`,
+  `write/set/clear mux`, `version`, `reboot-dfu`). Raw 8000-sample captures. USB `2e8a:0009`.
+- **DSP** (`main_dsp.c`, `-DDSP=ON`): raw TinyUSB on one CDC that carries both text replies and binary frames. USB
+  `cafe:4011`, strings `Ultr4rick…`, serial `U4RK0001`.
+  - Core 0 runs a cooperative superloop: USB task, command parsing, stream scheduling, capture polling and frame
+    output. Nothing may block it. A USB disconnect cancels the session, and stale jobs are dropped by `session_id`.
+  - Core 1 (`dsp/pipeline.c`) runs the DSP and writes header + CRC32 into one of 2 output slots. Back-pressure is
+    handled by counting drops, never by blocking.
 
-Board definition: `firmware/boards/ultr4rick.h`. It deliberately does *not* inherit `pico2.h`, because it targets RP2350B,
-W25Q128 16 MiB flash and a 12 MHz crystal. USB IDs are `cafe:4011`.
+Shared modules:
+- `hw/acquisition.c` + `.pio`: PIO0 generates the 60 MHz ADC clock on GPIO0 and samples D0–D9 on GPIO1–10. DMA moves
+  the samples into the capture buffer.
+- `hw/pulser.pio`: one PIO1 SM drives GPIO22/23 = {A, B}: `00` idle, A negative, B positive, A+B damping. The tick
+  is 8 ns and each phase needs at least 40 ns. It starts with the capture.
+- `hw/spi_bus.c`: SPI1 on GPIO26/27, shared by `hw/dac.c` (MCP4812, CS GPIO11) and `max/max14866.c` (nLE GPIO21,
+  SET 28, CLR 29). The MAX14866 has no chip select: shift 16 bits, then pulse nLE. Never pulse nLE first.
+- `dsp/dsp.c`: CMSIS-DSP `arm_rfft_fast_f32` forward transform, analytic mask, inverse transform, magnitude, then
+  optional A-law (A=87.6). Only the float32 transform sources are compiled (`cmsisdsp_u4rk`). Don't link the whole
+  library.
+- `dsp/protocol.c`: a fixed 64-byte little-endian header with `U4RK` magic. If you change it, update
+  `python/ultr4rick/dsp.py` (`HEADER`, `MAGIC`) and bump the versions (see `ultr4rick-versioning`).
+- I2C0 (GPIO24/25) and the uSD pins (GPIO30/31, 40–43) are defined in `hw/u4rk.h` but not driven yet.
+
+The board definition is `firmware/boards/ultr4rick.h` (`PICO_BOARD=ultr4rick`, forced in CMake). It deliberately
+does *not* inherit `pico2.h`: it targets RP2350B, W25Q128 16 MiB flash and a 12 MHz crystal.
 
 ## Hardware safety invariants
 
-- The pulser pins must be `00` at boot. `u4rk_acquisition_init()` runs first in `main()`. The pulser is disarmed on
-  USB disconnect, DMA fault, stream stop and reset. Keep all of these paths intact.
-- Never arm the pulser (`pulser arm`) on real hardware unless the user explicitly asks for it.
-- Pin conflicts: GPIO22/23 are used for the DAC SPI only when the jumpers to SCLK1/MOSI1 are fitted. MAX14866 control is
-  intentionally absent from the RP2350B firmware.
+- Pulser A/B must be `00` at boot. `u4rk_acquisition_init()` runs first in both `main()`s, before the USB wait.
+  The pulser is disarmed on USB disconnect, DMA fault, stream stop and reset. Keep all of these paths intact.
+- Never arm the pulser (`pulser arm`) on real hardware unless the user explicitly asks for it. Always disarm
+  afterwards, in a `finally`.
+- Only one process can own `/dev/ttyACM0`. Check `fuser -v /dev/ttyACM0` before blaming the firmware for lost bytes.
 
-## Known open issue
+## Known open issues
 
-The exact 4096-point Hilbert takes ~15.6 ms worst case on the RP2350B at the default clock. That exceeds the 70 Hz A-law
-limit (14.3 ms per frame) as well as the original 200 Hz/4.5 ms target. See `.claude/CHANGELOG.md` for measurements.
+- DSP time: the worst case was 14.2 ms on 2026-10-14. That is just inside the 70 Hz A-law frame period (14.3 ms), but
+  far over the 4.5 ms target. See `.claude/CHANGELOG.md`.
+- The first capture after idle has a start-of-frame transient. Discard it or check it before trusting it.
+- In the v2 schematic, the MCP4725 (U2) has SDA/SCL swapped. See `TODO.md`.
 
-## Change logging (required)
+## Change logging and versions (required)
 
-Log every change in `.claude/CHANGELOG.md` with a per-commit detail note in `.claude/commits/`. The
-format is in the `ultr4rick-changelog` skill. Only commit when asked, and branch off `main` first.
+Log every change in `.claude/CHANGELOG.md`, with a per-commit note in `.claude/commits/`, and keep `.claude/TODO.md`
+/ `.claude/DONE.md` current (`ultr4rick-changelog` skill). When committing, bump the patch of every component whose
+files changed (`ultr4rick-versioning` skill); major/minor belong to the maintainer. Commit after each major
+step on a branch off `main`; never commit to `main`, push or merge without being asked.

@@ -43,7 +43,7 @@ def pprint(ans):
 
 
 class Ultr4rick:
-    """Serial driver for the Ultr4rick (embarke) RP2350B firmware.
+    """Serial driver for the Ultr4rick RP2350B firmware (``firmware/``).
 
     Speaks both firmware builds:
       * stdio REPL build (``main.c``): ``dac``/``pulse_adc_trigger``/``read``;
@@ -133,7 +133,7 @@ class Ultr4rick:
         present only if the firmware emits the corresponding line):
             version : firmware version string, e.g. "0.1.1"
             changes : one-line change summary
-            board   : PICO_BOARD, e.g. "embarke"
+            board   : PICO_BOARD, e.g. "ultr4rick"
             chip    : e.g. "RP2350B"
             mux     : raw mux line, e.g. "enabled (MAX14866)"
             mux_enabled : bool derived from `mux`

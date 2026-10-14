@@ -2075,52 +2075,6 @@
 					)
 				)
 			)
-			(symbol "L_1_3"
-				(rectangle
-					(start 1.524 3.0988)
-					(end 1.9812 1.9304)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start 1.524 1.4224)
-					(end 1.9812 0.254)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start 1.524 -0.254)
-					(end 1.9812 -1.4224)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start 1.524 -1.9304)
-					(end 1.9812 -3.0988)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-			)
 			(embedded_fonts no)
 		)
 		(symbol "PCM_Resistor_AKL:R_Generic"

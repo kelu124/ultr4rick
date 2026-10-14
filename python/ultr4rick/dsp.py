@@ -1,6 +1,6 @@
 """Ultr4rick DSP-build host protocol.
 
-Parses the binary framed protocol emitted by the RP2350B (embarke) DSP firmware
+Parses the binary framed protocol emitted by the RP2350B DSP firmware (``firmware/``)
 (``-DDSP`` build): a 64-byte little-endian header + CRC32 payload, plus the
 ``OK …`` / ``ERR …`` text control lines and the ``status`` line.
 
@@ -196,9 +196,8 @@ def check_selftest(frames, tolerance: float = 1e-4) -> dict:
     """Check `dsp selftest` frames against ``scipy.signal.hilbert``.
 
     For each synthetic case the raw frame is the input and the envelope frame
-    must match ``|hilbert(raw - mean)|``. Uses the same metric as
-    ``firmware/tools/ultr4rick_capture.py --selftest``: RMS error normalised
-    by the reference peak, passing at <= `tolerance` (1e-4).
+    must match ``|hilbert(raw - mean)|``. Uses the acceptance metric of the original
+    Ultr4rick capture tool: RMS error normalised by the reference peak, passing at <= `tolerance` (1e-4).
     Returns ``{case_name: (normalized_rms, passed)}``.
     """
     from scipy.signal import hilbert

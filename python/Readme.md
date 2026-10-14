@@ -1,20 +1,20 @@
 # ultr4rick — Python host tools
 
-Host-side Python for driving an Ultr4rick v2 board running the **embarke**
-RP2350B firmware (`../embarke/`) over USB serial, and for turning its raw ADC
+Host-side Python for driving an Ultr4rick v2 board running the RP2350B
+firmware in `../firmware/` over USB serial, and for turning its raw ADC
 traces into ultrasonic NDT (non-destructive testing) measurements: pulse
 tuning, gain sweeps, back-wall echo detection, thickness estimation, and HDF5
 storage. (Formerly the `pic0rick` package; `Pic0rick` remains as an alias of
 `Ultr4rick`.)
 
-> Works with both embarke firmware builds (`embarke/build.sh`):
-> - the **stdio** build (`embarke` UF2, USB `2e8a:0009`): text REPL
+> Works with both firmware builds (`firmware/build.sh`):
+> - the **stdio** build (`ultr4rick` UF2, USB `2e8a:0009`): text REPL
 >   (`write dac`, `start acq`, `read`), via `Ultr4rick.dac/pulse_adc_trigger/read`;
-> - the **DSP** build (`embarke-dsp` UF2, USB `cafe:4011`): binary `U4RK`
+> - the **DSP** build (`ultr4rick-dsp` UF2, USB `cafe:4011`): binary `U4RK`
 >   frames, via `ultr4rick.dsp` and `Ultr4rick.status/capture/read_fft/read_raw`,
 >   streaming and the on-board DSP self-test.
 >
-> Board pin map: `../embarke/PINMAP.md`.
+> Board pin map: `../firmware/PINMAP.md`.
 
 ## Layout
 

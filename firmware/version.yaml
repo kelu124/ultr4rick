@@ -1,0 +1,12 @@
+# ultr4rick firmware version.
+#
+# Format: A.B.C  (major.minor.patch)
+#   A (major)  0-99   -- managed by the maintainer (Luc)
+#   B (minor)  0-99   -- managed by the maintainer (Luc)
+#   C (patch)  0-999  -- bumped by Claude on every change to firmware/ files
+#
+# `changes` is a short, single-line, double-quoted summary of what changed vs
+# the previous version. It is embedded in the binary (the `version` CLI command)
+# and used as the GitHub release body by .github/workflows/firmware.yml.
+version: "0.1.13"
+changes: "Repo cleanup: embarke/ is now firmware/; board renamed embarke -> ultr4rick (boards/ultr4rick.h, PICO_BOARD=ultr4rick, UF2s ultr4rick-v<ver>-{ultr4rick,ultr4rick-dsp}). No functional change."

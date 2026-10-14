@@ -1,68 +1,70 @@
 ---
 name: ultr4rick-board-test
-description: Talk to a flashed Ultr4rick board over its USB CDC command line and run the host capture/self-test tool (tools/ultr4rick_capture.py). Use after flashing, to check firmware version/status, run the DSP self-test, capture raw/envelope/A-law frames, or run stream stability tests. ultr4rick repo only.
+description: Talk to a flashed Ultr4rick board over USB CDC with the python/ultr4rick library — version/status, DSP self-test against scipy, raw/envelope/A-law captures, streaming, and (only when asked) pulsed captures. Use after flashing or to reproduce hardware behaviour. ultr4rick repo only.
 ---
 
 # Ultr4rick on-board testing
 
-The full test guide and wire protocol are in `firmware/ULTR4RICK_PROTOCOL.md`. Read it before
-changing frame formats or test acceptance criteria.
+The host library is `python/ultr4rick` (`device.Ultr4rick`, `dsp`). Run scripts with `python/` as the working
+directory so `import ultr4rick` resolves.
 
 ## Host environment
 
 The system Python has no scipy. Use a venv in the scratchpad:
 
 ```bash
-python3 -m venv $SCRATCH/venv && $SCRATCH/venv/bin/pip install -r firmware/tools/requirements.txt
+python3 -m venv $SCRATCH/venv && $SCRATCH/venv/bin/pip install -r requirements.txt   # repo root
 ```
 
-## Quick status (safe, no pulser/ADC)
+## Before talking to the board
+- `lsusb | grep -E 'cafe:4011|2e8a:0009'`: DSP build vs stdio build.
+- `fuser -v /dev/ttyACM0` must show no other process. A serial monitor from another session once stole bytes, which
+  made frames time out and the version parse come back partial. Ask before killing anything you didn't start.
 
-```bash
-python3 -c "
-import serial,time
-s=serial.Serial('/dev/ttyACM0',115200,timeout=1); time.sleep(0.3); s.reset_input_buffer()
-s.write(b'status\r\n'); time.sleep(0.5); print(s.read(4096).decode()); s.close()"
+## Standard check (safe: pulser stays disarmed)
+
+```python
+from ultr4rick.device import Ultr4rick
+from ultr4rick import dsp
+p = Ultr4rick(verbose=False)
+print(p.version())                       # version, board ultr4rick, chip RP2350B, mux enabled, build hash
+st = p.status(); assert not st["pulser_armed"]; print(st["raw"])
+print(p.command("dac write 300"), p.command("write mux 0"), p.command("clear mux"))
+print(dsp.check_selftest(p.selftest()))  # 7 cases, each (nrms, True); pass at nrms <= 1e-4
+raw, env, alaw = p.read_raw(), p.read_fft(), p.capture("alaw")
+p.stream_start("envelope", 20); frames = list(p.stream_frames(20)); print(p.stream_stop())   # drops=0
+p.close()
 ```
 
-The response should show `board=ultr4rick package=RP2350B firmware=1.5 pulser=disarmed`.
+`status` should show `board=ultr4rick package=RP2350B firmware=<version> pulser=disarmed`. While streaming the
+firmware sends only binary frames; text replies resume after `stream stop`. Max rates: raw 100, envelope 50,
+A-law 70 Hz.
 
-## DSP self-test (primary functional test)
+## Pulsed capture (only when the user explicitly asks)
 
-```bash
-$SCRATCH/venv/bin/python firmware/tools/ultr4rick_capture.py --port /dev/ttyACM0 --selftest --output $SCRATCH/selftest
+```python
+p.command("pulse config 96 6000 96 neg-first")
+try:
+    p.command("pulser arm"); raw = p.read_raw(); env = p.read_fft()
+finally:
+    p.command("pulser disarm")
+assert not p.status()["pulser_armed"]
 ```
 
-It should report 21/21 frames and 7 result lines with no `ERROR`. The tool rejects firmware other than `1.5`.
-Run `status` afterwards to read `stages_us` / `worst_us`.
-
-## Captures / streaming
-
-```bash
-... ultr4rick_capture.py --port /dev/ttyACM0 --mode raw|envelope|alaw --output DIR
-... ultr4rick_capture.py --port /dev/ttyACM0 --mode alaw --rate 70 --frames 4200 --timeout 30 --output DIR
-```
-
-While streaming, the firmware sends only binary frames. Text replies resume after `stream stop`.
+`python/example_dsp.ipynb` section 14 does this and plots idle vs pulsed (`python/data/pulsed_capture.png`).
 
 ## Safety rules
+- **Never** arm the pulser unless the user explicitly asks for a pulser test, and always disarm in a `finally`.
+  GPIO22/23 drive the HV pulser.
+- Assume the high-voltage supply may be connected.
 
-- **Never** send `pulser arm` unless the user explicitly asks for a pulser test. If you arm it, always
-  `pulser disarm` afterwards. GPIO27/28 drive the HV pulser.
-- Assume the high-voltage supply may be connected. Without being asked, stick to the `status`, `help`, `dsp selftest`,
-  `acq raw` and `read` commands.
-- `dac write` needs the GPIO22→SCLK1 and GPIO23→MOSI1 jumpers fitted.
-
-## Known baseline (2026-10-12, RP2350B, system GCC 10.3)
-
-Self-test passes (nrms ≤ 8.4e-8). DSP timings were `stages_us=558/6601/163/6327/1072/441`, `worst_us≈15.6 ms`.
-That is **above** the 14.3 ms frame period of the 70 Hz A-law limit, so a 70 Hz stream may drop
-frames on this board. Verify with the 60 s stream test before relying on 70 Hz.
-
-## ADC baseline, no input (2026-10-12, pulser disarmed)
-
-Three raw captures gave a mean of about **517.8 counts**: roughly +6 above mid-scale, with noise of 0.9 counts rms.
-The header `adc_dc_mean` matches `raw.npy.mean()` exactly.
-**Watch for this:** in the first capture after idle, samples 0–54 read 1012–1020 (near full scale) and pull the mean up to
-524. Later captures are clean. Check for this start-of-frame transient before trusting the first ~64 samples.
-To compute the mean yourself: `np.load(DIR/'raw.npy').mean()`, or read `adc_dc_mean` in `headers.json`.
+## Known results
+- 2026-10-14, firmware 0.1.12 DSP:
+  - Self-test 7/7, worst nRMS 8.4e-8.
+  - Idle raw mean ~517 counts, σ 0.9.
+  - DSP worst 14.2 ms.
+  - Stream: 20 frames at 20 Hz, 0 drops.
+- First capture after idle has a start-of-frame transient (raw min/max 208/892 seen). Discard it before trusting the data.
+- Pulsed, gain 300, 96/6000/96 neg-first:
+  - The excitation starts at 0.92 µs and the receiver saturates until about 6.2 µs.
+  - Echoes about every 41.3 µs, all saturated at gain 300. Use gain ~50–150.

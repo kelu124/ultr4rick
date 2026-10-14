@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Example: drive the Ultr4rick (embarke) RP2350B DSP firmware from Python.
+"""Example: drive the Ultr4rick RP2350B DSP firmware from Python.
 
-Targets the ``-DDSP`` firmware build (``embarke/build.sh`` ->
-``embarke-dsp`` UF2). Exercises the API:
+Targets the ``-DDSP`` firmware build (``firmware/build.sh`` ->
+``ultr4rick-dsp`` UF2). Exercises the API:
 
   * Ultr4rick.status()           -> parsed status dict
   * Ultr4rick.selftest()         -> on-board DSP self-test vs scipy
@@ -64,7 +64,7 @@ def main(argv=None):
         st = probe.status()
     except ValueError:
         print("This board is not running a DSP (-DDSP) firmware build "
-              "(no status line). Flash the embarke-dsp UF2.",
+              "(no status line). Flash the ultr4rick-dsp UF2.",
               file=sys.stderr)
         return 2
     print("Board:", st.get("board"), st.get("package"),

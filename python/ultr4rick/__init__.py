@@ -1,4 +1,4 @@
-"""Ultr4rick (embarke) host-side library.
+"""Ultr4rick host-side library.
 
 Version is the single source of truth in ``version.yaml`` (A.B.C, mirroring the
 firmware scheme). Parsed here without a YAML dependency so ``import ultr4rick``

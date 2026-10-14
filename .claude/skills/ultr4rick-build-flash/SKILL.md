@@ -1,6 +1,6 @@
 ---
 name: ultr4rick-build-flash
-description: Build the Ultr4rick RP2350B firmware (Pico SDK + CMake/Ninja) and flash it to the board over USB without sudo. Use when compiling, flashing, checking binary size, or when picotool reports a permissions error. ultr4rick repo only.
+description: Build the Ultr4rick RP2350B firmware (firmware/, Pico SDK + CMake/Ninja, stdio and DSP variants) and flash it to the board over USB without sudo. Use when compiling, flashing, checking binary size or pin info, or when picotool reports a permissions error. ultr4rick repo only.
 ---
 
 # Build & flash Ultr4rick firmware
@@ -8,43 +8,40 @@ description: Build the Ultr4rick RP2350B firmware (Pico SDK + CMake/Ninja) and f
 ## One-shot
 
 ```bash
-.claude/skills/ultr4rick-build-flash/flash.sh             # build + flash
-.claude/skills/ultr4rick-build-flash/flash.sh --no-build  # flash existing build/adc-pulse.uf2
+.claude/skills/ultr4rick-build-flash/flash.sh                 # build both, flash the DSP variant
+.claude/skills/ultr4rick-build-flash/flash.sh --stdio         # build both, flash the stdio variant
+.claude/skills/ultr4rick-build-flash/flash.sh --no-build [uf2]
 ```
 
 ## Build by hand
 
 ```bash
-cd firmware
-export PICO_SDK_PATH=$HOME/.pico-sdk/sdk/2.3.0
-cmake -S . -B build -G Ninja -DPICO_TOOLCHAIN_PATH=/usr   # first time only
-ninja -C build
-arm-none-eabi-size build/adc-pulse.elf
-picotool info build/adc-pulse.uf2      # expect version 1.5, family rp2350-arm-s
+cd firmware && export PICO_SDK_PATH=$HOME/.pico-sdk/sdk/2.3.0
+./build.sh -DPICO_TOOLCHAIN_PATH=/usr        # build/ (stdio) + build-dsp/ (DSP) -> dist/ultr4rick-v<ver>-*.uf2
+# or one variant:
+cmake -S . -B build-dsp -G Ninja -DPICO_TOOLCHAIN_PATH=/usr -DDSP=ON && ninja -C build-dsp
+picotool info -a dist/ultr4rick-v<ver>-ultr4rick-dsp.uf2   # pico_board ultr4rick, rp2350-arm-s, boot2_w25q080
+picotool info -p build-dsp/adc-pulse.uf2                    # pin list (bi_decl)
+arm-none-eabi-size build-dsp/adc-pulse.elf
 ```
 
-- The output target is `adc-pulse` (historic name), not `ultr4rick`.
-- CMakeLists pins toolchain `15_2_Rel1`, but `~/.pico-sdk/toolchain/` is empty on this
-  machine, so the build uses the system `/usr/bin/arm-none-eabi-gcc` (10.3). It builds clean.
-  A GCC 14.3 is also available at `~/.arduino15/packages/rp2040/tools/pqt-gcc/4.1.0-1aec55e`.
-  Use it with `-DPICO_TOOLCHAIN_PATH=<that dir>` in a fresh build dir if you want to compare
-  DSP timings.
-- CMSIS-DSP v1.17.0 is fetched by FetchContent at configure time, so the first configure needs network access.
-- `PICO_BOARD` is forced to `ultr4rick` (`firmware/boards/ultr4rick.h`). The `else()` RP2040
-  branch in CMakeLists refers to `main.c`, `adc/`, `max/`, and none of those exist in this repo. It is dead.
+- The output target is `adc-pulse` (historic name). `build.sh` passes its arguments to CMake.
+- `~/.pico-sdk/toolchain/` is empty on this machine, so use `-DPICO_TOOLCHAIN_PATH=/usr`, which selects the system
+  `arm-none-eabi-gcc` 10.3. Both variants build with no warnings.
+- The DSP build fetches CMSIS-DSP v1.17.0 into `firmware/.deps/` (FetchContent; the first run needs network).
+  If the tree moves, delete `.deps/*-subbuild .deps/*-build` (they cache absolute paths) and keep `*-src`.
+- `build*/`, `dist/`, `.deps/` and `*.uf2` are gitignored.
 
 ## Flashing without sudo
 
-There are no udev rules for picotool, so `picotool load` fails with "unable to connect…permissions".
-Use the mass-storage path instead, which is what `flash.sh` automates:
+There are no udev rules for picotool, so `picotool load` fails with a permissions error. Use mass storage instead,
+which is what `flash.sh` automates:
 
-1. Get the board into BOOTSEL (`2e8a:000f`). A 1200-baud touch on the CDC port only works when the board is running
-   stock SDK `stdio_usb` firmware (`2e8a:0009`). **Ultr4rick firmware 1.5 does not implement it**, so a board
-   already running Ultr4rick needs BOOTSEL held while plugging it in.
+1. Get the board into BOOTSEL (`2e8a:000f`): send **`reboot-dfu`** on the CDC port (both variants support it).
+   The stdio variant also honours the 1200-baud touch. Otherwise hold BOOTSEL while plugging it in.
 2. The `RP2350` drive auto-mounts at `/media/$USER/RP2350`. If it doesn't, run `udisksctl mount -b /dev/sdX1`.
-3. `cp build/adc-pulse.uf2 /media/$USER/RP2350/`. The board reboots on its own.
-4. It should re-enumerate as `cafe:4011 Ultr4rick RP2350B Signal Processor` on `/dev/ttyACM0`.
+3. `cp <uf2> /media/$USER/RP2350/`. The board reboots on its own.
+4. The DSP build re-enumerates as `cafe:4011 Ultr4rick RP2350B Signal Processor`; the stdio build as `2e8a:0009`.
 
-If the board is unresponsive, hold BOOTSEL while plugging it in, then run `flash.sh --no-build`.
-
-After flashing, verify with the `ultr4rick-board-test` skill.
+If `reboot-dfu` gets no answer, check `fuser -v /dev/ttyACM*`: another process (e.g. a serial monitor) may own the
+port. Then verify with `ultr4rick-board-test`.

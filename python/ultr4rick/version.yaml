@@ -1,4 +1,4 @@
-# ultr4rick (embarke) Python library version.
+# ultr4rick Python library version.
 #
 # Format: A.B.C  (major.minor.patch)  -- mirrors the firmware scheme.
 #   A (major)  0-99   -- managed by the maintainer (Luc)
@@ -7,5 +7,5 @@
 #
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. Exposed as ultr4rick.__changes__.
-version: "0.1.9"
-changes: "Rename package pic0rick -> ultr4rick for the embarke RP2350B firmware: class Ultr4rick (Pic0rick alias kept), U4RK frame magic, USB VID:PID port detection, new reboot_dfu/close/command/help/set_alaw_reference/selftest/stream_start/stream_frames/stream_stop, dsp.check_selftest."
+version: "0.1.10"
+changes: "Repo cleanup: references follow embarke/ -> firmware/ and the board rename embarke -> ultr4rick (docs, docstrings, example_dsp). No API change."

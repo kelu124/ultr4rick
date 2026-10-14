@@ -1,0 +1,48 @@
+# Repo cleanup: v2 hardware and the RP2350B firmware become hardware/ and firmware/
+
+- **Commit:** uncommitted (branch embarke-ultr4rick)
+- **Date:** 2026-10-14
+- **Files:** hardware/ (was hardware_v2/; the old hardware/ was removed), firmware/ (was embarke/; the old firmware/
+  was removed), firmware/boards/ultr4rick.h (was boards/embarke.h), firmware/{CMakeLists.txt, build.sh, PINMAP.md,
+  hw/u4rk.h, max/max14866.h, version.yaml, CHANGELOG.md}, python/{Readme.md, example_dsp.py, example_dsp.ipynb,
+  ultr4rick/*.py, ultr4rick/version.yaml}, requirements.txt, README.md, CLAUDE.md, .claude/skills/* (embarke-firmware
+  -> ultr4rick-firmware, build-flash + flash.sh, board-test, changelog, new versioning), .claude/{TODO,DONE,CHANGELOG}.md
+- **Versions:** firmware 0.1.12 -> 0.1.13, python 0.1.9 -> 0.1.10
+
+## Why
+The maintainer asked for the v2 board and the new firmware to become the canonical `hardware/` and `firmware/`, with
+every reference in the repo updated. They also asked for skills covering per-commit notes, TODO/DONE tracking and
+version ownership (Claude bumps the patch, the maintainer owns major/minor).
+
+## What changed
+- `git rm` of the old `hardware/` (v1) and `firmware/` (Ultr4rick 1.5 + `ULTR4RICK_PROTOCOL.md` +
+  `tools/ultr4rick_capture.py` + prebuilt UF2/zip), then `git mv hardware_v2 hardware` and `git mv embarke firmware`.
+  KiCad was closed first (its lock files were present).
+- The board name `embarke` became `ultr4rick` throughout: `boards/ultr4rick.h` (`ULTR4RICK` macro),
+  `PICO_BOARD=ultr4rick`, UF2s `dist/ultr4rick-v<ver>-{ultr4rick,ultr4rick-dsp}.uf2`. The `version` command now
+  reports `board: ultr4rick`. No functional firmware change.
+- `build.sh` bug fix: `build_one` used `"$@"`, which inside the function is its own arguments, so the variant label went
+  to CMake as a stray path and the script's `-DPICO_TOOLCHAIN_PATH=/usr` was dropped. The script's arguments are now
+  captured in `CMAKE_ARGS`.
+- The FetchContent sub-build caches in `firmware/.deps` held the old absolute path. They were deleted (the source
+  was kept).
+- `flash.sh` builds both variants and flashes DSP by default (`--stdio` for the other). It enters BOOTSEL with
+  `reboot-dfu`, then falls back to a 1200-baud touch.
+- Skills: `ultr4rick-firmware` (renamed from embarke-firmware), `ultr4rick-build-flash` and `ultr4rick-board-test`
+  rewritten (the board test now uses `python/ultr4rick`, not the removed capture tool), `ultr4rick-changelog` gains
+  `.claude/TODO.md`/`DONE.md` and a **Versions:** line, and there is a new `ultr4rick-versioning`.
+- README.md (overview, layout, quick start, safety) and CLAUDE.md (layout, architecture, invariants, open issues)
+  were rewritten. The python Readme, docstrings, notebook text and requirements comment no longer point at
+  `embarke/` or the removed tools.
+- `ultr4rick-changelog` gains the "commit at each major step" rule (requested by the maintainer), and CLAUDE.md
+  points to it.
+- Historical changelog entries and commit notes keep the names that were in use at the time.
+
+## Verification
+- `firmware/build.sh -DPICO_TOOLCHAIN_PATH=/usr`: both variants build with 0 warnings; `picotool info` shows version
+  0.1.13 and pico_board ultr4rick.
+- `flash.sh --no-build` against a board running 0.1.12 DSP: entered BOOTSEL via `reboot-dfu` with no button, flashed,
+  and the board re-enumerated as `cafe:4011`.
+- Hardware check via `python/ultr4rick` (pulser disarmed throughout): version 0.1.13, board ultr4rick, RP2350B,
+  mux enabled. DAC/mux commands OK. Self-test 7/7, worst nRMS 8.4e-8. Raw mean 517.7, σ 1.35. Stream: 20 frames
+  at 20 Hz, 0 drops.

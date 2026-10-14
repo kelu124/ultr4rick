@@ -1,5 +1,4 @@
-# Host-side Python for the Ultr4rick board:
-#   python/ultr4rick (library + notebooks) and firmware/tools/ultr4rick_capture.py
+# Host-side Python for the Ultr4rick board: python/ultr4rick (library + notebooks).
 # Install: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 numpy>=1.26
 pyserial>=3.5

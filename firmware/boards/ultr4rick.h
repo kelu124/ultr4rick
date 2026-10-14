@@ -1,8 +1,9 @@
 /*
- * Ultr4rick RP2350B board definition.
+ * Ultr4rick RP2350B board definition (hardware/, Ultr4rick v2).
  *
  * This intentionally does not inherit boards/pico2.h: that header selects the
- * 30-GPIO RP2350A package and assigns GPIO23/24/29 to Pico 2 board functions.
+ * 30-GPIO RP2350A package, and this board uses GPIO40..43 (uSD) which only
+ * exist on the 48-GPIO RP2350B. No radio (no CYW43). See PINMAP.md.
  */
 #ifndef _BOARDS_ULTR4RICK_H
 #define _BOARDS_ULTR4RICK_H
@@ -12,12 +13,12 @@ pico_board_cmake_set(PICO_PLATFORM, rp2350)
 #define ULTR4RICK
 #define PICO_RP2350A 0
 
-/* The schematic uses the standard 12 MHz crystal. */
+/* U5: 12 MHz crystal. */
 #ifndef PICO_XOSC_FREQ_HZ
 #define PICO_XOSC_FREQ_HZ 12000000
 #endif
 
-/* Board I2C bus (preserved; not initialized by the signal-processing build). */
+/* I2C0 on GPIO24 (SDA) / GPIO25 (SCL): LP5562 LED driver, MCP4725. */
 #ifndef PICO_DEFAULT_I2C
 #define PICO_DEFAULT_I2C 0
 #endif
@@ -28,21 +29,21 @@ pico_board_cmake_set(PICO_PLATFORM, rp2350)
 #define PICO_DEFAULT_I2C_SCL_PIN 25
 #endif
 
-/* MCP4812 jumper bus: GPIO22 -> SCLK1 and GPIO23 -> MOSI1. */
+/* SPI1 on GPIO26 (SCK) / GPIO27 (TX), shared by the MCP4812 and MAX14866. */
 #ifndef PICO_DEFAULT_SPI
-#define PICO_DEFAULT_SPI 0
+#define PICO_DEFAULT_SPI 1
 #endif
 #ifndef PICO_DEFAULT_SPI_SCK_PIN
-#define PICO_DEFAULT_SPI_SCK_PIN 22
+#define PICO_DEFAULT_SPI_SCK_PIN 26
 #endif
 #ifndef PICO_DEFAULT_SPI_TX_PIN
-#define PICO_DEFAULT_SPI_TX_PIN 23
+#define PICO_DEFAULT_SPI_TX_PIN 27
 #endif
 #ifndef PICO_DEFAULT_SPI_CSN_PIN
 #define PICO_DEFAULT_SPI_CSN_PIN 11
 #endif
 
-/* W25Q128JV: 16 MiB external QSPI flash. */
+/* U4: W25Q128JV, 16 MiB external QSPI flash. */
 #define PICO_BOOT_STAGE2_CHOOSE_W25Q080 1
 #ifndef PICO_FLASH_SPI_CLKDIV
 #define PICO_FLASH_SPI_CLKDIV 2
