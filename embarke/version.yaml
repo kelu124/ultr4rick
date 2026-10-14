@@ -1,0 +1,12 @@
+# ultr4rick (embarke) firmware version.
+#
+# Format: A.B.C  (major.minor.patch)
+#   A (major)  0-99   -- managed by the maintainer (Luc)
+#   B (minor)  0-99   -- managed by the maintainer (Luc)
+#   C (patch)  0-999  -- bumped by Claude on every change to firmware/ files
+#
+# `changes` is a short, single-line, double-quoted summary of what changed vs
+# the previous version. It is embedded in the binary (the `version` CLI command)
+# and used as the GitHub release body by .github/workflows/firmware.yml.
+version: "0.1.12"
+changes: "embarke: identity now Ultr4rick (USB strings, U4RK frame magic). RP2350B-only board (boards/embarke.h). Pulser on GPIO22/23 A/B (00 off, A neg, B pos, AB damp), MCP4812+MAX14866 on shared SPI1 GPIO26/27 (CS_DAC 11, nLE 21, SET 28, CLR 29). RP2040/pico2 builds dropped."
