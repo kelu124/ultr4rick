@@ -10,6 +10,7 @@
 
 #include "acquisition.h"   // shared pulser + ADC capture (firmware/hw)
 #include "dac.h"           // shared spi1 MCP4812 DAC (firmware/hw)
+#include "led.h"           // LP5562 status LED on I2C0 (firmware/hw)
 #include "u4rk.h"
 #include "version.h"
 #include "version_git.h"
@@ -32,6 +33,20 @@ typedef struct
 // Single-threaded stdio build: one raw capture buffer (8000 samples).
 static uint16_t capture_buf[U4RK_RAW_SAMPLE_COUNT];
 static bool capture_valid;
+static uint64_t led_fault_until_us;
+
+#define LED_FAULT_HOLD_US 500000u
+#define INPUT_POLL_US     10000u
+
+// Idle colour (after a fault has been shown long enough) + W = port open.
+static void led_poll_idle(void)
+{
+    if (time_us_64() >= led_fault_until_us)
+    {
+        u4rk_led_set_stage(U4RK_LED_IDLE);
+    }
+    u4rk_led_set_host_connected(stdio_usb_connected());
+}
 
 //---------------------------------------------------------------------------
 // VERSION COMMAND
@@ -101,6 +116,7 @@ void start_acq_cmd(const char *args)
         return;
     }
     u4rk_pulser_arm();
+    u4rk_led_set_stage(U4RK_LED_CAPTURE);
 
     if (!u4rk_capture_start(capture_buf, U4RK_RAW_SAMPLE_COUNT)) {
         u4rk_pulser_disarm();
@@ -121,6 +137,8 @@ void start_acq_cmd(const char *args)
         printf("Acquisition ended\n");
     } else {
         capture_valid = false;
+        u4rk_led_set_stage(U4RK_LED_FAULT);
+        led_fault_until_us = time_us_64() + LED_FAULT_HOLD_US;
         printf("ADC timeout occured\n");
     }
 }
@@ -130,6 +148,7 @@ void start_acq_cmd(const char *args)
 //--------------------------------------------------------------------------
 void read_cmd(const char *args)
 {
+    u4rk_led_set_stage(U4RK_LED_USB);
     printf("----------Start of ACQ----------\n");
     for (uint32_t i = 0; i < U4RK_RAW_SAMPLE_COUNT; ++i) {
         printf("%X,", ((capture_buf[i] >> 1) & 0x3FF));
@@ -194,7 +213,13 @@ void read_input(char *buffer, int max_len)
     int index = 0;
     while (1)
     {
-        char ch = getchar();
+        int c = getchar_timeout_us(INPUT_POLL_US);
+        if (c == PICO_ERROR_TIMEOUT)
+        {
+            led_poll_idle();
+            continue;
+        }
+        char ch = (char)c;
         if (ch == '\r' || ch == '\n')
         {
             buffer[index] = '\0';
@@ -228,6 +253,7 @@ int main()
 {
     // Pulser A/B low (all off) before anything else, including the USB wait.
     u4rk_acquisition_init();
+    u4rk_led_init();   // white while booting
     stdio_init_all();
 
     while (!stdio_usb_connected())

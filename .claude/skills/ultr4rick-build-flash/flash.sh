@@ -56,11 +56,17 @@ for _ in $(seq 1 20); do
 done
 [[ -n "$DEV" ]] || { echo "RP2350 drive did not appear" >&2; exit 1; }
 
-MNT="$(lsblk -no MOUNTPOINT "$DEV")"
+# Give the desktop automounter a moment; mount ourselves only if it doesn't.
+MNT=""
+for _ in $(seq 1 6); do
+    MNT="$(lsblk -no MOUNTPOINT "$DEV")"
+    [[ -n "$MNT" ]] && break; sleep 0.5
+done
 if [[ -z "$MNT" ]]; then
-    udisksctl mount -b "$DEV" --no-user-interaction >/dev/null
+    udisksctl mount -b "$DEV" --no-user-interaction >/dev/null 2>&1 || true   # may race the automounter
     MNT="$(lsblk -no MOUNTPOINT "$DEV")"
 fi
+[[ -n "$MNT" ]] || { echo "could not mount $DEV" >&2; exit 1; }
 cp "$UF2" "$MNT/" && sync
 echo "Flashed $UF2 via $MNT"
 

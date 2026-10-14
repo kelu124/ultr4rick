@@ -1,0 +1,46 @@
+# firmware: LP5562 status LED (pipeline stage colours, W = port open)
+
+- **Commit:** uncommitted (branch embarke-ultr4rick)
+- **Date:** 2026-10-14
+- **Files:** firmware/hw/led.{c,h} (new), firmware/hw/u4rk.h, firmware/main_dsp.c, firmware/main.c,
+  firmware/dsp/usb_transport.{c,h}, firmware/CMakeLists.txt, firmware/{version.yaml,CHANGELOG.md}, TODO.md,
+  .claude/skills/ultr4rick-build-flash/flash.sh, .claude/{TODO,DONE,CHANGELOG}.md
+- **Versions:** firmware 0.1.13 -> 0.1.14, python unchanged
+
+## Why
+The maintainer asked for the RGB LED on the LP5562 to show a different colour for each pipeline stage, dimmed to 5%,
+and for the W channel to light while someone has the device's ttyACM open and go off when the connection drops.
+
+## What changed
+- Netlist facts (hardware/):
+  - LP5562 U10 at 7-bit address 0x30 (ADDR_SEL0/1 to GND), EN/VCC tied to 3.3 V, external 32 kHz oscillator present.
+  - Common-anode RGB LED U12 on the R/G/B outputs; W drives LED2 (a red 0603).
+  - **No pull-up resistors on I2C0** (added to the root TODO.md).
+- `hw/led.c`:
+  - I2C0 at 100 kHz on the internal pull-ups.
+  - Init: LP5562 reset, CHIP_EN (linear PWM), internal clock, LED_MAP = I2C control.
+  - B/G/R PWM are written in one auto-increment transaction, and the read-back must match, otherwise `present = false`.
+  - Every I2C call has a 2 ms timeout.
+  - Brightness is `U4RK_LED_LEVEL_PERCENT` = 5, so full scale is 13/255 PWM.
+- Stage colours: boot white, idle green, capture yellow, DSP blue, USB magenta, fault red (held 0.5 s).
+- DSP build: `update_led()` runs on core 0 in the superloop, at most every 2 ms, and writes only on change. The stage
+  comes from state core 0 already tracks: `capture_inflight`, `!u4rk_pipeline_processing_idle()`, then output
+  pending / USB TX busy, else idle. Core 1 never touches I2C. The W channel follows the new `u4rk_usb_port_open()`
+  (`tud_mounted() && tud_cdc_connected()`, i.e. DTR).
+- stdio build: the stage is set around `start acq` / `read`. `read_input()` now polls `getchar_timeout_us(10 ms)`,
+  so the LED goes back to idle and W follows `stdio_usb_connected()` without blocking.
+- `status` gains `led=ok|absent`. `bi_decl` gains the I2C0 pins.
+- `flash.sh`: waits for the desktop automounter and tolerates "already mounted" (it raced and aborted once).
+
+## Verification
+- Both variants build with 0 warnings. Flashed the DSP build: `led=ok` (the LP5562 ACKs and the PWM read-back matches,
+  despite the MCP4725 SDA/SCL swap). Self-test 7/7. Streams stopped cleanly. Pulser disarmed throughout.
+- **DSP timing is layout-sensitive, not LED-load-sensitive.** One-shot envelope `dsp_us`, 30 captures each:
+  - 0.1.13 with no LED code (built from 0e1d65a): 13.4–13.8 ms, FFTs 5.9/5.9 ms.
+  - This commit: 16.8–18.7 ms, FFTs ~7.5 ms each.
+  - This commit with the `update_led()` call removed: 19.9–20.3 ms.
+
+  Removing the runtime LED work made it *slower*, and rate-limiting the LED made no difference. So the slowdown comes
+  from where the code and tables land in flash (XIP cache), not from the LED. Next step: run from SRAM.
+- A 50 Hz envelope stream drops 51/100 frames in all three builds, so that limit already existed.
+- Colours were not checked by eye by Claude; the maintainer is asked to confirm them.

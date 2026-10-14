@@ -12,6 +12,7 @@
 #include "acquisition.h"
 #include "dac.h"
 #include "dsp.h"
+#include "led.h"
 #include "pipeline.h"
 #include "u4rk.h"
 #include "usb_transport.h"
@@ -24,6 +25,10 @@
 #define U4RK_COMMAND_BUFFER_SIZE 160u
 #define U4RK_RESPONSE_BUFFER_SIZE 512u
 #define U4RK_CONTROL_TIMEOUT_MS 2000u
+#define U4RK_LED_FAULT_HOLD_US 500000u
+/* LED refresh period: far below what the eye sees, and it keeps I2C traffic and
+ * superloop work small. */
+#define U4RK_LED_UPDATE_US 2000u
 
 typedef struct {
     bool active;
@@ -63,6 +68,7 @@ static u4rk_payload_type_t selftest_type;
  * never be mistaken for work belonging to the next host connection. */
 static uint32_t usb_session_id = 1u;
 static bool usb_was_mounted;
+static uint64_t led_fault_until_us;
 
 static uint16_t legacy_read_buffer[U4RK_MAX_SAMPLE_COUNT];
 
@@ -236,6 +242,7 @@ static void poll_capture(void) {
         u4rk_pipeline_release_raw(capture_raw_index);
         stream.active = false;
         dma_fault_pending = true;
+        led_fault_until_us = time_us_64() + U4RK_LED_FAULT_HOLD_US;
     }
 }
 
@@ -452,7 +459,7 @@ static void send_status(void) {
         "pulser=%s pulse=%u/%u/%u/%s dac=%u scale=%.6g "
         "stream=%s/%u drops=%u stages_us=%u/%u/%u/%u/%u/%u "
         "dsp_us=%u worst_us=%u performance=%s "
-        "envelope_max_rate=%u alaw_max_rate=%u cmsis=%s",
+        "envelope_max_rate=%u alaw_max_rate=%u cmsis=%s led=%s",
         PICO_PROGRAM_VERSION_STRING,
         U4RK_SAMPLE_COUNT, U4RK_SAMPLE_RATE_HZ,
         u4rk_pulser_is_armed() ? "armed" : "disarmed",
@@ -467,7 +474,7 @@ static void send_status(void) {
         metrics.worst_total_us <= U4RK_DSP_TARGET_US
             ? "ok" : "over-budget",
         U4RK_ENVELOPE_MAX_RATE_HZ, U4RK_ALAW_MAX_RATE_HZ,
-        U4RK_CMSIS_DSP_VERSION);
+        U4RK_CMSIS_DSP_VERSION, u4rk_led_present() ? "ok" : "absent");
 }
 
 static void legacy_read(void) {
@@ -875,6 +882,33 @@ static void cancel_usb_session(void) {
     drain_ready_outputs_as_drops();
 }
 
+/* Status LED: RGB shows the pipeline stage of the oldest work in flight, W
+ * shows whether a host has the port open. Core 0 only; I2C writes happen only
+ * on changes. */
+static void update_led(void) {
+    static uint64_t next_update_us;
+    uint64_t now = time_us_64();
+    if (now < next_update_us) {
+        return;
+    }
+    next_update_us = now + U4RK_LED_UPDATE_US;
+    u4rk_led_stage_t stage;
+    if (now < led_fault_until_us) {
+        stage = U4RK_LED_FAULT;
+    } else if (capture_inflight) {
+        stage = U4RK_LED_CAPTURE;
+    } else if (!u4rk_pipeline_processing_idle()) {
+        stage = U4RK_LED_DSP;
+    } else if (output_slot_active || u4rk_usb_tx_busy() ||
+               u4rk_pipeline_has_pending_output()) {
+        stage = U4RK_LED_USB;
+    } else {
+        stage = U4RK_LED_IDLE;
+    }
+    u4rk_led_set_stage(stage);
+    u4rk_led_set_host_connected(u4rk_usb_port_open());
+}
+
 static void handle_disconnect(void) {
     bool mounted = u4rk_usb_mounted();
     if (usb_was_mounted && !mounted) {
@@ -899,6 +933,9 @@ int main(void) {
     bi_decl(bi_2pins_with_names(
         U4RK_MUX_SET_PIN, "MAX14866 SET",
         U4RK_MUX_CLR_PIN, "MAX14866 CLR"));
+    bi_decl(bi_2pins_with_names(
+        U4RK_I2C_SDA_PIN, "I2C0 SDA (LP5562 status LED)",
+        U4RK_I2C_SCL_PIN, "I2C0 SCL (LP5562 status LED)"));
 
     /*
      * Pulser safety comes first: pulser A/B are driven low (all off) before
@@ -909,8 +946,10 @@ int main(void) {
 #ifdef MUX
     max14866_init();
 #endif
+    u4rk_led_init();   /* white until the superloop takes over */
     if (!u4rk_pipeline_init()) {
         u4rk_pulser_disarm();
+        u4rk_led_set_stage(U4RK_LED_FAULT);
         while (true) {
             tight_loop_contents();
         }
@@ -929,6 +968,7 @@ int main(void) {
         poll_capture();
         poll_completions();
         poll_output();
+        update_led();
         finish_stop_or_fault();
         poll_command_input();
         schedule_stream();

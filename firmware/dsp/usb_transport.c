@@ -83,6 +83,10 @@ bool u4rk_usb_mounted(void) {
     return tud_mounted();
 }
 
+bool u4rk_usb_port_open(void) {
+    return tud_mounted() && tud_cdc_connected();
+}
+
 int u4rk_usb_read_char(void) {
     if (!tud_cdc_available()) {
         return -1;

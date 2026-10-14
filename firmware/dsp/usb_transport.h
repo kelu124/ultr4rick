@@ -9,6 +9,8 @@ bool u4rk_usb_init(void);
 void u4rk_usb_task(void);
 bool u4rk_usb_connected(void);
 bool u4rk_usb_mounted(void);
+/* A host program has the ttyACM open (CDC DTR asserted). */
+bool u4rk_usb_port_open(void);
 int u4rk_usb_read_char(void);
 
 bool u4rk_usb_write_blocking(const void *data, size_t length,

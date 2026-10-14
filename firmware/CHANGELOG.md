@@ -10,6 +10,19 @@ This file and `version.yaml` are the version record — editing them does not
 itself trigger a version bump. Every firmware version bump must add an entry
 here (see `docs/claude/README.md`).
 
+## 0.1.14 — 2026-10-14
+- **Status LED (LP5562 on I2C0, GPIO24/25):** new `hw/led.c`. The RGB LED
+  shows the pipeline stage: white boot, green idle, yellow capture, blue DSP
+  (core 1), magenta USB transmit, red fault (held 0.5 s). The W channel (LED2)
+  is on while a host has the ttyACM open (CDC DTR) and off when it drops.
+  All channels are at 5% PWM (`U4RK_LED_LEVEL_PERCENT`), linear.
+- I2C0 runs at 100 kHz on the RP2350 internal pull-ups, because the v2 board
+  has no external ones. The LP5562 is reset at boot; the read-back of the
+  auto-incremented B/G/R write must match, otherwise `led=absent`.
+- Core 0 only, with writes only on changes (about 0.5 ms each). The stdio REPL
+  now polls input with a 10 ms timeout, so the LED follows the port state.
+- `status` gains `led=ok|absent`.
+
 ## 0.1.13 — 2026-10-14
 - **Repo cleanup, no functional change:** the `embarke/` tree replaced the old
   `firmware/` (the previous Ultr4rick 1.5 firmware is in git history at

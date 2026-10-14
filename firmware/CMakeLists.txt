@@ -158,6 +158,7 @@ if(DSP)
         ${CMAKE_CURRENT_LIST_DIR}/hw/acquisition.c
         ${CMAKE_CURRENT_LIST_DIR}/hw/dac.c
         ${CMAKE_CURRENT_LIST_DIR}/hw/spi_bus.c
+        ${CMAKE_CURRENT_LIST_DIR}/hw/led.c
     )
     pico_generate_pio_header(u4rk_dsp ${CMAKE_CURRENT_LIST_DIR}/hw/acquisition.pio)
     pico_generate_pio_header(u4rk_dsp ${CMAKE_CURRENT_LIST_DIR}/hw/pulser.pio)
@@ -178,6 +179,7 @@ if(DSP)
         hardware_clocks
         hardware_gpio
         hardware_spi
+        hardware_i2c
         cmsisdsp_u4rk
     )
 else()
@@ -234,6 +236,7 @@ if(DSP)
         hardware_clocks
         hardware_gpio
         hardware_spi
+        hardware_i2c
         tinyusb_device
         u4rk_dsp
     )
@@ -249,6 +252,7 @@ else()
         ${CMAKE_CURRENT_LIST_DIR}/hw/acquisition.c
         ${CMAKE_CURRENT_LIST_DIR}/hw/dac.c
         ${CMAKE_CURRENT_LIST_DIR}/hw/spi_bus.c
+        ${CMAKE_CURRENT_LIST_DIR}/hw/led.c
     )
     target_include_directories(adc-pulse PRIVATE ${CMAKE_CURRENT_LIST_DIR}/hw)
     target_link_libraries(adc-pulse PRIVATE
@@ -259,6 +263,7 @@ else()
         hardware_clocks
         hardware_gpio
         hardware_spi
+        hardware_i2c
     )
 endif()
 

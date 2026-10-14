@@ -5,8 +5,10 @@ is the root `TODO.md`. When an item is finished, move it to `DONE.md`.
 
 ## Open
 
-- [ ] 2026-10-14 (in progress, user request): LP5562 RGB status LED on I2C0 with a different colour per pipeline
-      stage, dimmed to 5%.
+- [ ] 2026-10-14 (next step): DSP time depends on code layout in flash (13.4 ms vs 16.8–20.3 ms for the same DSP
+      code in three builds). Run from SRAM (`copy_to_ram`) so timing stops depending on layout.
+- [ ] 2026-10-14: Confirm visually that the LED colours (white/green/yellow/blue/magenta/red) and the W LED
+      (LED2) on port open/close behave as intended.
 - [ ] 2026-10-14: Merge branch `embarke-ultr4rick` into `main` (or open a PR). Waiting on the maintainer.
 - [ ] 2026-10-14: Check the pulser timing on a scope (GPIO22/23). Ringing ended at about 6.2 µs, but the damping phase
       should run until about 7.1 µs.

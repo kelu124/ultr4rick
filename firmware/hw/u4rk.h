@@ -51,9 +51,10 @@
 #define U4RK_MUX_SET_PIN              28u
 #define U4RK_MUX_CLR_PIN              29u
 
-/* I2C0: LP5562 LED driver (and MCP4725). Not initialised by the firmware yet. */
+/* I2C0: LP5562 RGB status LED (hw/led.c), MCP4725 (unused). */
 #define U4RK_I2C_SDA_PIN              24u
 #define U4RK_I2C_SCL_PIN              25u
+#define U4RK_LED_LEVEL_PERCENT        5u    /* status LED brightness, % of full PWM */
 
 /* uSD (4-bit SDIO): D0..D3 consecutive. Not driven by the firmware yet. */
 #define U4RK_SD_SCK_PIN               30u

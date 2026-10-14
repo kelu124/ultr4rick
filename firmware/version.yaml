@@ -8,5 +8,5 @@
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. It is embedded in the binary (the `version` CLI command)
 # and used as the GitHub release body by .github/workflows/firmware.yml.
-version: "0.1.13"
-changes: "Repo cleanup: embarke/ is now firmware/; board renamed embarke -> ultr4rick (boards/ultr4rick.h, PICO_BOARD=ultr4rick, UF2s ultr4rick-v<ver>-{ultr4rick,ultr4rick-dsp}). No functional change."
+version: "0.1.14"
+changes: "LP5562 status LED on I2C0 (GPIO24/25, 100 kHz, internal pull-ups) at 5% level: RGB = pipeline stage (white boot, green idle, yellow capture, blue DSP, magenta USB, red fault), W (LED2) on while a host has the ttyACM open (DTR). status reports led=ok|absent."
