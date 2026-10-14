@@ -6,10 +6,10 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-14
 
-- `uncommitted` Repo cleanup: `hardware_v2/` replaces `hardware/` and `embarke/` replaces `firmware/` (old trees in
+- `0e1d65a` Repo cleanup: `hardware_v2/` replaces `hardware/` and `embarke/` replaces `firmware/` (old trees in
   history at `4da14a5`). Board renamed `embarke` -> `ultr4rick`, `build.sh` argument passing fixed, `flash.sh` now uses
   `reboot-dfu`. README, CLAUDE.md and skills rewritten for the new layout. New `ultr4rick-versioning` skill and
-  `.claude/TODO.md`/`DONE.md`. Firmware 0.1.13 and Python 0.1.10. — [details](commits/2026-10-14-repo-cleanup.md)
+  `.claude/TODO.md`/`DONE.md`. Firmware 0.1.13 and Python 0.1.10. — [details](commits/2026-10-14-0e1d65a.md)
 - `a63e0f7` Rename the `python/pic0rick` package to `python/ultr4rick` (0.1.9) for the embarke firmware: `Ultr4rick`
   class (`Pic0rick` alias), `U4RK` frame magic, USB-ID port detection, plus DFU reboot, streaming, self-test and
   `dsp scale` helpers. Flashed `embarke-dsp` 0.1.12; DSP self-test 7/7 passes, raw/envelope/A-law captures and a 20-frame stream work, 0 drops. Added the root `requirements.txt`, the notebooks' `python/data/` folder and an idle-vs-pulsed figure cell. — [details](commits/2026-10-14-a63e0f7.md)

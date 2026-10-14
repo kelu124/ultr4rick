@@ -7,7 +7,7 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 - [x] `uncommitted` Repo cleanup: `hardware_v2/` -> `hardware/`, `embarke/` -> `firmware/` (old trees in history at
       `4da14a5`); board renamed `embarke` -> `ultr4rick`; README/CLAUDE.md/skills updated; new `ultr4rick-versioning`
       skill; TODO/DONE tracking; `flash.sh` uses `reboot-dfu`. Firmware 0.1.13, Python 0.1.10 —
-      [details](commits/2026-10-14-repo-cleanup.md)
+      [details](commits/2026-10-14-0e1d65a.md)
 - [x] `a63e0f7` `python/ultr4rick` host library, root `requirements.txt`, `python/data/`, idle-vs-pulsed notebook
       cell — [details](commits/2026-10-14-a63e0f7.md)
 - [x] `a63e0f7` First pulsed capture on the v2 board (96/6000/96 ns, gain 300): echoes every ~41.3 µs.
