@@ -4,8 +4,8 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-14
 
-- [x] `uncommitted` LP5562 status LED: RGB = pipeline stage at 5%, W = ttyACM open; firmware 0.1.14 —
-      [details](commits/2026-10-14-status-led.md)
+- [x] `4cff792` LP5562 status LED: RGB = pipeline stage at 5%, W = ttyACM open; firmware 0.1.14 —
+      [details](commits/2026-10-14-4cff792.md)
 - [x] `0e1d65a` Repo cleanup: `hardware_v2/` -> `hardware/`, `embarke/` -> `firmware/` (old trees in history at
       `4da14a5`); board renamed `embarke` -> `ultr4rick`; README/CLAUDE.md/skills updated; new `ultr4rick-versioning`
       skill; TODO/DONE tracking; `flash.sh` uses `reboot-dfu`. Firmware 0.1.13, Python 0.1.10 —

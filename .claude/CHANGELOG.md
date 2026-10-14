@@ -6,9 +6,9 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-14
 
-- `uncommitted` LP5562 status LED on I2C0. The RGB LED shows the pipeline stage at 5% (white/green/yellow/blue/magenta/red),
+- `4cff792` LP5562 status LED on I2C0. The RGB LED shows the pipeline stage at 5% (white/green/yellow/blue/magenta/red),
   and W (LED2) is on while a host has the ttyACM open. `status` gains `led=`. `flash.sh` automount race fixed.
-  Firmware 0.1.14. — [details](commits/2026-10-14-status-led.md)
+  Firmware 0.1.14. — [details](commits/2026-10-14-4cff792.md)
 - `0e1d65a` Repo cleanup: `hardware_v2/` replaces `hardware/` and `embarke/` replaces `firmware/` (old trees in
   history at `4da14a5`). Board renamed `embarke` -> `ultr4rick`, `build.sh` argument passing fixed, `flash.sh` now uses
   `reboot-dfu`. README, CLAUDE.md and skills rewritten for the new layout. New `ultr4rick-versioning` skill and
