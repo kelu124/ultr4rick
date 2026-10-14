@@ -4,6 +4,8 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-15
 
+- [x] `b16e8b2` Saved Claude's memory into `CLAUDE.md` and skills — [note](commits/2026-10-15-b16e8b2.md)
+- [x] Deleted the merged `embarke-ultr4rick` branch locally and on origin.
 - [x] Pushed `embarke-ultr4rick` and fast-forward merged it into `main` (maintainer request).
 
 ## 2026-10-14

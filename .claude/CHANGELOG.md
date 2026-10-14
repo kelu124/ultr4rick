@@ -4,6 +4,10 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 [`commits/`](commits/). The convention is in `.claude/skills/ultr4rick-changelog/SKILL.md`. Open and finished actions are in
 [`TODO.md`](TODO.md) / [`DONE.md`](DONE.md).
 
+## 2026-10-15
+
+- `b16e8b2` Move Claude's private memory into CLAUDE.md and skills — [details](commits/2026-10-15-b16e8b2.md)
+
 ## 2026-10-14
 
 - `c797503` Run the firmware from SRAM (`copy_to_ram`). DSP time no longer depends on flash layout: envelope
