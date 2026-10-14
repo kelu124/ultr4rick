@@ -1,0 +1,35 @@
+# firmware: run from SRAM so DSP time no longer depends on flash layout
+
+- **Commit:** uncommitted (branch embarke-ultr4rick)
+- **Date:** 2026-10-14
+- **Files:** firmware/CMakeLists.txt, firmware/{version.yaml,CHANGELOG.md}, CLAUDE.md,
+  .claude/skills/{ultr4rick-board-test,ultr4rick-firmware}/SKILL.md, .claude/{TODO,DONE,CHANGELOG}.md
+- **Versions:** firmware 0.1.14 -> 0.1.15, python unchanged
+
+## Why
+While adding the status LED (4cff792), the core-1 DSP time changed from 13.4 ms to 16.8–20.3 ms with no change to the
+DSP code. Removing the LED's runtime work made it *slower*, so the cause was where code and CMSIS tables landed in
+flash, served through the shared XIP cache. That also explained the long-standing "DSP too slow" open issue.
+
+## What changed
+- `pico_set_binary_type(adc-pulse copy_to_ram)`: the boot2/crt0 copies the whole image to SRAM, and code runs from there.
+  `.text` is 58 KB, `.data` (now including rodata) 51 KB, `.bss` 160 KB, so about 270 KB of 520 KB SRAM is used.
+- This applies to both variants. The stdio build is small (47 KB text) and also runs from RAM.
+
+## Verification
+Same benchmark script (30 one-shot envelope captures, `dsp_us` from `status`):
+
+| Build | one-shot dsp_us | forward / inverse FFT |
+|---|---|---|
+| 0.1.13 XIP, no LED | 13.4–13.8 ms | 5.9 / 5.9 ms |
+| 0.1.14 XIP, LED | 16.8–18.7 ms | ~7.5 / 7.5 ms |
+| 0.1.14 XIP, `update_led()` removed | 19.9–20.3 ms | 9.1 / 9.1 ms |
+| **0.1.15 copy_to_ram** | **6.55–6.57 ms** | **2.3 / 2.6 ms** |
+
+- Self-test 7/7 (worst nRMS 8.4e-8, unchanged). `led=ok`, pulser disarmed throughout.
+- Streams (the `drops` counter is cumulative):
+  - 20 Hz envelope: +0 drops over 40 frames.
+  - 40 Hz envelope: +1 over 80.
+  - 70 Hz A-law: +1 over 140.
+  - 50 Hz envelope: ~26/100 dropped. 50 × 16 KB = 820 KB/s saturates USB full-speed CDC, so this is now USB-bound.
+- Worst case including A-law: 7.3 ms. That is still over the 4.5 ms target, so `performance=over-budget` remains.

@@ -267,4 +267,11 @@ else()
     )
 endif()
 
+# Run from SRAM: the whole image is copied out of flash at boot. With XIP the
+# core-1 FFT time depended on where code/tables happened to land in flash
+# (13.4 to 20.3 ms for identical DSP code across three builds); from RAM it
+# no longer depends on the layout or on what core 0 runs. Uses ~110 KB of
+# the 520 KB SRAM on top of the ~170 KB of buffers.
+pico_set_binary_type(adc-pulse copy_to_ram)
+
 pico_add_extra_outputs(adc-pulse)

@@ -45,6 +45,8 @@ The tick is 8 ns, and each phase needs at least 40 ns.
 | `build.sh` | builds both variants into `dist/` |
 
 ## Invariants
+- The image runs from SRAM (`copy_to_ram`). Don't switch back to XIP: DSP time then depends on code layout in flash
+  (measured 13.4–20.3 ms for the same code, against 6.55 ms from RAM).
 - Pulser A/B must be `00` at boot. `u4rk_acquisition_init()` runs first in both `main.c` and `main_dsp.c`,
   before the USB wait. The pulser is disarmed on stop, DMA fault and disconnect.
 - **Never arm the pulser on real hardware unless the user explicitly asks.**

@@ -10,6 +10,14 @@ This file and `version.yaml` are the version record — editing them does not
 itself trigger a version bump. Every firmware version bump must add an entry
 here (see `docs/claude/README.md`).
 
+## 0.1.15 — 2026-10-14
+- **Run from SRAM** (`pico_set_binary_type(copy_to_ram)`, both variants). With
+  XIP, identical DSP code took 13.4, 16.8–18.7 or 19.9–20.3 ms depending on
+  where code/tables landed in flash. From SRAM the one-shot envelope takes
+  6.55 ms (FFTs 2.3/2.6 ms, jitter < 20 µs), and the worst case with A-law is 7.3 ms.
+  SRAM use is about 270 KB of 520 KB. A 50 Hz envelope stream (820 KB/s) is now
+  USB-bound, not DSP-bound.
+
 ## 0.1.14 — 2026-10-14
 - **Status LED (LP5562 on I2C0, GPIO24/25):** new `hw/led.c`. The RGB LED
   shows the pipeline stage: white boot, green idle, yellow capture, blue DSP

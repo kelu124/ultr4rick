@@ -8,5 +8,5 @@
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. It is embedded in the binary (the `version` CLI command)
 # and used as the GitHub release body by .github/workflows/firmware.yml.
-version: "0.1.14"
-changes: "LP5562 status LED on I2C0 (GPIO24/25, 100 kHz, internal pull-ups) at 5% level: RGB = pipeline stage (white boot, green idle, yellow capture, blue DSP, magenta USB, red fault), W (LED2) on while a host has the ttyACM open (DTR). status reports led=ok|absent."
+version: "0.1.15"
+changes: "Run from SRAM (copy_to_ram): DSP time no longer depends on flash layout; envelope 13.4-20 ms -> 6.55 ms, worst with A-law 7.3 ms. ~270 KB SRAM used."

@@ -59,6 +59,10 @@ assert not p.status()["pulser_armed"]
 - Assume the high-voltage supply may be connected.
 
 ## Known results
+- 2026-10-14, firmware 0.1.15 (runs from SRAM):
+  - One-shot envelope `dsp_us` 6.55 ms (FFTs 2.3/2.6 ms), worst with A-law 7.3 ms.
+  - Streams: 20 Hz envelope and 70 Hz A-law sustain with ≤ 1 drop. 50 Hz envelope drops ~25% (USB-bound).
+  - `status` `drops` is cumulative since boot: compare before/after.
 - 2026-10-14, firmware 0.1.12 DSP:
   - Self-test 7/7, worst nRMS 8.4e-8.
   - Idle raw mean ~517 counts, σ 0.9.

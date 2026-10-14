@@ -67,7 +67,8 @@ Shared modules:
   `python/ultr4rick/dsp.py` (`HEADER`, `MAGIC`) and bump the versions (see `ultr4rick-versioning`).
 - I2C0 (GPIO24/25) and the uSD pins (GPIO30/31, 40–43) are defined in `hw/u4rk.h` but not driven yet.
 
-The board definition is `firmware/boards/ultr4rick.h` (`PICO_BOARD=ultr4rick`, forced in CMake). It deliberately
+The image runs from SRAM (`pico_set_binary_type(copy_to_ram)`, about 270 KB of 520 KB used). Keep an eye on SRAM when adding
+buffers. The board definition is `firmware/boards/ultr4rick.h` (`PICO_BOARD=ultr4rick`, forced in CMake). It deliberately
 does *not* inherit `pico2.h`: it targets RP2350B, W25Q128 16 MiB flash and a 12 MHz crystal.
 
 ## Hardware safety invariants
@@ -80,8 +81,9 @@ does *not* inherit `pico2.h`: it targets RP2350B, W25Q128 16 MiB flash and a 12 
 
 ## Known open issues
 
-- DSP time: the worst case was 14.2 ms on 2026-10-14. That is just inside the 70 Hz A-law frame period (14.3 ms), but
-  far over the 4.5 ms target. See `.claude/CHANGELOG.md`.
+- DSP time: running from SRAM (`copy_to_ram`, firmware 0.1.15) brought the envelope down to 6.55 ms (7.3 ms worst with
+  A-law). That is well inside the 70 Hz A-law period, but still over the 4.5 ms target. Don't go back to XIP execution:
+  from flash the timing depended on code layout (13.4–20.3 ms). A 50 Hz envelope stream is USB-bound.
 - The first capture after idle has a start-of-frame transient. Discard it or check it before trusting it.
 - In the v2 schematic, the MCP4725 (U2) has SDA/SCL swapped. See `TODO.md`.
 
