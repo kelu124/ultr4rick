@@ -2,6 +2,10 @@
 
 Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
+## 2026-10-15
+
+- [x] Pushed `embarke-ultr4rick` and fast-forward merged it into `main` (maintainer request).
+
 ## 2026-10-14
 
 - [x] `c797503` Run from SRAM: DSP 13.4–20.3 ms (layout-dependent) -> 6.55 ms; firmware 0.1.15 —
