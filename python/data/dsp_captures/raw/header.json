@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "payload_type": 1,
+  "flags": 16,
+  "sequence": 314,
+  "sample_count": 8000,
+  "sample_rate_hz": 60000000,
+  "payload_bytes": 16000,
+  "capture_timestamp_us": 794685618,
+  "adc_dc_mean": 518.2638549804688,
+  "envelope_peak": 0.0,
+  "alaw_reference": 512.0,
+  "negative_ns": 96,
+  "damp_ns": 6000,
+  "positive_ns": 96,
+  "dropped_frames": 0,
+  "payload_crc32": 605308300
+}
