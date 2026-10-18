@@ -7,5 +7,5 @@
 #
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. Exposed as ultr4rick.__changes__.
-version: "0.1.13"
-changes: "example_dsp.ipynb: new section 13 transmits/receives on mux element 2 then element 4 (set_one_mux), saves data/mux_elements.png; later sections renumbered 14-16."
+version: "0.1.14"
+changes: "SPDX GPL-3.0-or-later headers on the .py files (no code change); Readme documents versions(), write_mux(), set_one_mux(), mux_element_mask() and the license."

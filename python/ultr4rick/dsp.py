@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Ultr4rick DSP-build host protocol.
 
 Parses the binary framed protocol emitted by the RP2350B DSP firmware (``firmware/``)

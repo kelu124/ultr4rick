@@ -39,11 +39,20 @@ board by USB ID (`cafe:4011` DSP build, then `2e8a:0009` stdio build) and
 falls back to the first `/dev/ttyACM*`·`/dev/ttyUSB*` / `COM*` /
 `tty.usbmodem*`.
 
+On connection it reads the firmware version and prints both versions
+(`Firmware 0.1.16 - library 0.1.14`). They are kept as `firmware_version` and
+`library_version` (strings; `"unknown"` if the board didn't answer) and
+returned by `versions()`.
+
 | Method | Firmware command | Build |
 |---|---|---|
 | `version()` | `version` | both |
+| `versions()` | none: `(firmware_version, library_version)` read at connection | both |
 | `reboot_dfu()` | `reboot-dfu` (→ `RP2350` UF2 drive) | both |
-| `write_mux(v)` / `set_mux()` / `clear_mux()` | `write mux <hex>` / `set mux` / `clear mux` | both |
+| `write_mux(v)` | `write mux <hex>`: any pattern 0..0xFFFF (int or hex string, range-checked) | both |
+| `set_one_mux(k)` | `write mux …`: element k (1..8) on TX and RX, other switches open | both |
+| `Ultr4rick.mux_element_mask(k, tx, rx)` | none: the pattern for element k | both |
+| `set_mux()` / `clear_mux()` | `set mux` / `clear mux` (all closed / all open) | both |
 | `dac(N)` | `write dac N` | stdio |
 | `pulse_adc_trigger(pon, poff, damp)` | `start acq …` | stdio |
 | `read()` | `read` (8000 hex samples) | stdio |
@@ -61,6 +70,12 @@ Pulser: the board drives two lines, A (GPIO22) and B (GPIO23): A = negative,
 B = positive, A+B = damping, none = idle. `negative_ns`/`positive_ns`/`damp_ns`
 set each phase (8 ns resolution). The MAX14866 mux is on the board, so the mux
 commands are always available.
+
+Mux: element k (U18–U21, U26–U29) goes to RX through switch SW(2k-2) and to
+TX through SW(2k-1), so `set_one_mux(1)` loads `0x0003` and `set_one_mux(8)`
+`0xC000`. Pitch-catch (TX on 1, RX on 2):
+`write_mux(mux_element_mask(1, rx=False) | mux_element_mask(2, tx=False))`
+= `0x0006`. Full table in `../docs/03-firmware.md`.
 
 `Fech = 60e6` (60 MS/s) is stored on the instance. `verbose`/`logging` options
 echo or append the raw serial exchange to a log file.
@@ -133,3 +148,11 @@ a = UltrasonicAcquisition.from_probe(Fech=60e6, gain=350, pon=70, poff=70, damp=
                                      piezo_central_freq=5e6, piezo_bandwidth=4e6)
 a.detect_echoes(start_us=35, end_us=55, target_thickness=0.010, speed_of_sound=5950)
 ```
+
+## Documentation and license
+
+User documentation: [`../docs/`](../docs/README.md), with the full API in
+[`../docs/04-python-library.md`](../docs/04-python-library.md).
+
+The library, scripts and notebooks are licensed GPL-3.0-or-later (each `.py`
+file carries an SPDX header); see [`../LICENSE.md`](../LICENSE.md).

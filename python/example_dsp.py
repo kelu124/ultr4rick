@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Example: drive the Ultr4rick RP2350B DSP firmware from Python.
 
 Targets the ``-DDSP`` firmware build (``firmware/build.sh`` ->

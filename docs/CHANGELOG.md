@@ -3,6 +3,9 @@
 All notable changes to `docs/`. Versions follow the `A.B.C` scheme in [`version.yaml`](version.yaml)
 (major.minor.patch). The patch is bumped on every change to a docs page. Newest first.
 
+## 0.1.3 — 2026-10-18
+- Checked against Python 0.1.14. The Python page says the `.py` files carry SPDX GPL-3.0-or-later headers.
+
 ## 0.1.2 — 2026-10-18
 - Checked against firmware 0.1.16. The firmware page says the sources carry `SPDX-License-Identifier:
   GPL-3.0-or-later` headers.

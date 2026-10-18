@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Ultr4rick host-side library.
 
 Version is the single source of truth in ``version.yaml`` (A.B.C, mirroring the

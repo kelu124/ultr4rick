@@ -3,7 +3,7 @@
 The `ultr4rick` package in [`python/ultr4rick/`](../python/ultr4rick/) drives the board over USB serial and turns
 its traces into measurements. Its version is in
 [`python/ultr4rick/version.yaml`](../python/ultr4rick/version.yaml) and available as `ultr4rick.__version__`. This
-page describes library **0.1.13**.
+page describes library **0.1.14**.
 
 ## Install
 
@@ -31,7 +31,7 @@ probe = Ultr4rick(port=None, verbose=True, logging=False, log_file=".log")
 - `port=None` finds the board by USB ID (`cafe:4011` DSP build, then `2e8a:0009` stdio build), then falls back to
   the first `/dev/ttyACM*`, `/dev/ttyUSB*`, `COM*` or `/dev/tty.usbmodem*`.
 - When it connects, it reads the firmware version and prints both versions:
-  `Firmware 0.1.16 - library 0.1.13`. They are kept as `probe.firmware_version` and `probe.library_version`
+  `Firmware 0.1.16 - library 0.1.14`. They are kept as `probe.firmware_version` and `probe.library_version`
   (strings; the firmware one is `"unknown"` if the board didn't answer), and returned by `probe.versions()`.
 - `probe.Fech` is the sampling rate, 60e6.
 - `verbose` prints the serial replies, `logging` appends them to `log_file`.
@@ -129,4 +129,5 @@ a.detect_echoes(start_us=35, end_us=55, target_thickness=0.010, speed_of_sound=5
 | `python/example_acquisition.ipynb` | thickness of a 5-step 1018 steel block with a 5 MHz probe | yes |
 | `python/example_process.ipynb` | analysis of a saved HDF5 file | no |
 
+The `.py` files carry `SPDX-License-Identifier: GPL-3.0-or-later` (see [`LICENSE.md`](../LICENSE.md)).
 The notebooks write to `python/data/` (see [`python/data/README.md`](../python/data/README.md)).

@@ -8,7 +8,7 @@
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. `firmware` and `python` are the component versions the
 # pages were last checked against.
-version: "0.1.2"
-changes: "Checked against firmware 0.1.16 (SPDX headers); firmware page notes the source license headers."
+version: "0.1.3"
+changes: "Checked against Python 0.1.14 (SPDX headers, Readme); Python page notes the license headers."
 firmware: "0.1.16"
-python: "0.1.13"
+python: "0.1.14"
