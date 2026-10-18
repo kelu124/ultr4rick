@@ -4,6 +4,7 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-18
 
+- [x] Pushed `spdx-headers-readme`, fast-forward merged it into `main` and deleted it locally and on origin (maintainer request).
 - [x] `6e1fba7` `python/Readme.md` updated, SPDX headers on the Python sources — [note](commits/2026-10-18-6e1fba7.md)
 - [x] `f22f2bb` SPDX headers on the firmware sources, `firmware/CHANGELOG.md` reference fixed — [note](commits/2026-10-18-f22f2bb.md)
 - [x] `6491841` CONTRIBUTING.md adapted, CC BY-SA 4.0 confirmed by the maintainer — [note](commits/2026-10-18-6491841.md)
