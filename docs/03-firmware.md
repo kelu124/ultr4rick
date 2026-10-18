@@ -3,7 +3,7 @@
 The firmware in [`firmware/`](../firmware/) is C on the Raspberry Pi Pico SDK 2.3.0, for the **RP2350B** only. It
 started as a fork of the pic0rick firmware (0.1.11). Its version is in
 [`firmware/version.yaml`](../firmware/version.yaml) and printed by the `version` command. This page describes
-firmware **0.1.15**.
+firmware **0.1.16**.
 
 ## Two builds of one hardware layer
 
@@ -195,6 +195,8 @@ mux nLE/SET/CLR GPIO21/28/29, pulser A/B GPIO22/23, I2C0 GPIO24/25, SPI1 GPIO26/
 
 - `./build.sh -DPICO_TOOLCHAIN_PATH=/usr` builds `dist/ultr4rick-v<ver>-{ultr4rick,ultr4rick-dsp}.uf2`.
 - The board definition is `firmware/boards/ultr4rick.h`: RP2350B, 12 MHz crystal, W25Q128 16 MiB flash.
+- Every source file carries `SPDX-License-Identifier: GPL-3.0-or-later` (see [`LICENSE.md`](../LICENSE.md)), except
+  `pico_sdk_import.cmake`, copied from the Pico SDK (BSD-3-Clause).
 - `version.yaml` holds `A.B.C` and a one-line change summary, which are embedded in the binary. The history is in
   [`firmware/CHANGELOG.md`](../firmware/CHANGELOG.md).
 

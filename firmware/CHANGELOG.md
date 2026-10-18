@@ -8,7 +8,13 @@ change to `firmware/` source. Newest first.
 
 This file and `version.yaml` are the version record — editing them does not
 itself trigger a version bump. Every firmware version bump must add an entry
-here (see `docs/claude/README.md`).
+here (see `.claude/skills/ultr4rick-versioning/SKILL.md`).
+
+## 0.1.16 — 2026-10-18
+- Add `SPDX-License-Identifier: GPL-3.0-or-later` to every firmware source, header, PIO program and build
+  script (`pico_sdk_import.cmake` stays BSD-3-Clause, from the Pico SDK). No code change. See `LICENSE.md`.
+- This file now points to `.claude/skills/ultr4rick-versioning/SKILL.md` instead of the missing
+  `docs/claude/README.md`.
 
 ## 0.1.15 — 2026-10-14
 - **Run from SRAM** (`pico_set_binary_type(copy_to_ram)`, both variants). With

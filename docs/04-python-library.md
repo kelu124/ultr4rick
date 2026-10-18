@@ -31,7 +31,7 @@ probe = Ultr4rick(port=None, verbose=True, logging=False, log_file=".log")
 - `port=None` finds the board by USB ID (`cafe:4011` DSP build, then `2e8a:0009` stdio build), then falls back to
   the first `/dev/ttyACM*`, `/dev/ttyUSB*`, `COM*` or `/dev/tty.usbmodem*`.
 - When it connects, it reads the firmware version and prints both versions:
-  `Firmware 0.1.15 - library 0.1.13`. They are kept as `probe.firmware_version` and `probe.library_version`
+  `Firmware 0.1.16 - library 0.1.13`. They are kept as `probe.firmware_version` and `probe.library_version`
   (strings; the firmware one is `"unknown"` if the board didn't answer), and returned by `probe.versions()`.
 - `probe.Fech` is the sampling rate, 60e6.
 - `verbose` prints the serial replies, `logging` appends them to `log_file`.

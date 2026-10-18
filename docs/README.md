@@ -1,7 +1,7 @@
 # Ultr4rick documentation
 
-Docs version **0.1.1** ([`version.yaml`](version.yaml), [changelog](CHANGELOG.md)). The pages were last checked
-against **firmware 0.1.15** and **Python library 0.1.13**.
+Docs version **0.1.2** ([`version.yaml`](version.yaml), [changelog](CHANGELOG.md)). The pages were last checked
+against **firmware 0.1.16** and **Python library 0.1.13**.
 
 | Page | For |
 |---|---|

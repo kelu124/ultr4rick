@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 /*
  * Ultr4rick RP2350B board definition (hardware/, Ultr4rick v2).
  *

@@ -8,5 +8,5 @@
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. It is embedded in the binary (the `version` CLI command)
 # and used as the GitHub release body by .github/workflows/firmware.yml.
-version: "0.1.15"
-changes: "Run from SRAM (copy_to_ram): DSP time no longer depends on flash layout; envelope 13.4-20 ms -> 6.55 ms, worst with A-law 7.3 ms. ~270 KB SRAM used."
+version: "0.1.16"
+changes: "SPDX GPL-3.0-or-later headers on all firmware sources (no code change); CHANGELOG points to the versioning skill."

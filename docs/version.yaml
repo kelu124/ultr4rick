@@ -8,7 +8,7 @@
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. `firmware` and `python` are the component versions the
 # pages were last checked against.
-version: "0.1.1"
-changes: "v0 board photos (front, back, running with a transducer) in docs/images/v0, described in docs/images/README.md; SMA PULSER_OUT/AFE_IN connection; v0 TR4-TR7 silkscreen error on U26-U29."
-firmware: "0.1.15"
+version: "0.1.2"
+changes: "Checked against firmware 0.1.16 (SPDX headers); firmware page notes the source license headers."
+firmware: "0.1.16"
 python: "0.1.13"

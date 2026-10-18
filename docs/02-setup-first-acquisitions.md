@@ -68,8 +68,8 @@ from ultr4rick import dsp
 
 probe = Ultr4rick(verbose=False)      # finds the board by its USB ID
 # Device on /dev/ttyACM0
-# Firmware 0.1.15 - library 0.1.13
-print(probe.versions())               # ('0.1.15', '0.1.13')
+# Firmware 0.1.16 - library 0.1.13
+print(probe.versions())               # ('0.1.16', '0.1.13')
 print(probe.status()["raw"])          # ... pulser=disarmed ...
 print(dsp.check_selftest(probe.selftest()))
 ```

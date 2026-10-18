@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 //!
 //! \file       version_git.h
 //! \brief      Git build hash, regenerated on EVERY build by

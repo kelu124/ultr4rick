@@ -3,6 +3,10 @@
 All notable changes to `docs/`. Versions follow the `A.B.C` scheme in [`version.yaml`](version.yaml)
 (major.minor.patch). The patch is bumped on every change to a docs page. Newest first.
 
+## 0.1.2 — 2026-10-18
+- Checked against firmware 0.1.16. The firmware page says the sources carry `SPDX-License-Identifier:
+  GPL-3.0-or-later` headers.
+
 ## 0.1.1 — 2026-10-18
 - Photos of the v0 board in [`images/v0/`](images/v0/), each described in [`images/README.md`](images/README.md):
   front (introduction), back with the element connectors (introduction, firmware), running with a transducer

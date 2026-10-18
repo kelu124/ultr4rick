@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Build both Ultr4rick (RP2350B) firmware variants into dist/:
 #   ultr4rick      stdio REPL (main.c)                 -> build/
 #   ultr4rick-dsp  raw-TinyUSB DSP build (main_dsp.c)  -> build-dsp/ (needs CMSIS-DSP)

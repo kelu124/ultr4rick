@@ -1,3 +1,4 @@
+; SPDX-License-Identifier: GPL-3.0-or-later
 .program u4rk_adc
 .side_set 1
 

@@ -1,3 +1,4 @@
+; SPDX-License-Identifier: GPL-3.0-or-later
 ; One PIO1 state machine drives GPIO22/23 as {A, B} (A = bit 0):
 ;   0 = all low, 1 = negative (A), 3 = damping (A+B), 2 = positive (B).
 ;

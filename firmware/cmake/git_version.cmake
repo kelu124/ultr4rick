@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 # Regenerate version_git.h with the current git short hash (+ "-dirty" when the
 # firmware/ tree has uncommitted changes). Run both at configure time and on
 # every build (via a custom target) so the embedded hash always matches the
