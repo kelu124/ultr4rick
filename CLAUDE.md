@@ -92,7 +92,9 @@ does *not* inherit `pico2.h`: it targets RP2350B, W25Q128 16 MiB flash and a 12 
 Log every change in `.claude/CHANGELOG.md`, with a per-commit note in `.claude/commits/`, and keep `.claude/TODO.md`
 / `.claude/DONE.md` current (`ultr4rick-changelog` skill). When committing, bump the patch of every component whose
 files changed (`ultr4rick-versioning` skill); major/minor belong to the maintainer. Commit after each major
-step on a branch off `main`; never commit to `main`, push or merge without being asked.
+step. Commits that bump no version (no `firmware/` or `python/` change) may go straight to `main` and be pushed.
+Anything that bumps the firmware or Python version goes on a branch off `main`; don't commit it to `main`, push or
+merge it without being asked.
 
 ## Working with the maintainer
 
@@ -100,7 +102,7 @@ step on a branch off `main`; never commit to `main`, push or merge without being
   measured numbers. An edit that hasn't been run on hardware isn't done; say so if you couldn't verify it.
 - Keep project know-how in this repo (`CLAUDE.md`, `.claude/skills/`, `.claude/TODO.md`), not only in private memory,
   so any session can pick it up.
-- Branches: `main` is the integration branch. Start a new branch off `main` per piece of work; once it's merged and the
+- Branches: `main` is the integration branch. Start a new branch off `main` per piece of work that bumps a version; once it's merged and the
   maintainer asks to trim, delete it locally and on `origin`.
 - Ask before killing processes you didn't start (e.g. a serial monitor from another session holding the port).
 - KiCad must be closed before moving or renaming anything under `hardware/`.

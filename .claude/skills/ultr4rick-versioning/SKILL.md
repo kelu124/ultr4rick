@@ -16,7 +16,8 @@ There are two independently versioned components, both `A.B.C` = major.minor.pat
 - **Major (A) and minor (B) are the maintainer's.** Never change them, even for big or breaking changes. If you
   think one is due, say so and let the user decide.
 - **Patch (C): Claude bumps it when committing**, once per commit, for each component whose files that commit
-  changes. A firmware-only commit bumps only the firmware, and so on. Docs-only commits (`.claude/`, README) bump nothing.
+  changes. A firmware-only commit bumps only the firmware, and so on. Docs-only commits (`.claude/`, README) bump nothing,
+  and those may be committed and pushed straight to `main` (`ultr4rick-changelog`).
 - `changes:` is one double-quoted line saying what changed since the previous version. It is embedded in the
   firmware binary and shown by the Python library.
 - The firmware's CMake reads `version.yaml` at configure time, so rebuild after bumping and confirm with
