@@ -13,7 +13,7 @@ is the root `TODO.md`. When an item is finished, move it to `DONE.md`.
       (LED2) on port open/close behave as intended.
 - [ ] 2026-10-14: Check the pulser timing on a scope (GPIO22/23). Ringing ended at about 6.2 µs, but the damping phase
       should run until about 7.1 µs.
-- [ ] 2026-10-14: Run `python/example_dsp.ipynb` section 14 with the pulser actually armed. So far it has only been
+- [ ] 2026-10-14: Run `python/example_dsp.ipynb` section 15 with the pulser actually armed. So far it has only been
       dry-run.
 - [ ] 2026-10-14: Write a protocol/command reference for the current firmware. The old `ULTR4RICK_PROTOCOL.md` was
       removed along with the 1.5 firmware.

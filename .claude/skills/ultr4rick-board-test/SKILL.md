@@ -51,7 +51,7 @@ finally:
 assert not p.status()["pulser_armed"]
 ```
 
-`python/example_dsp.ipynb` section 14 does this and plots idle vs pulsed (`python/data/pulsed_capture.png`).
+`python/example_dsp.ipynb` section 15 does this and plots idle vs pulsed (`python/data/pulsed_capture.png`).
 
 ## Safety rules
 - **Never** arm the pulser unless the user explicitly asks for a pulser test, and always disarm in a `finally`.

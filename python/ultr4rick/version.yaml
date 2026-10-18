@@ -7,5 +7,5 @@
 #
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. Exposed as ultr4rick.__changes__.
-version: "0.1.12"
-changes: "Ultr4rick() reads the firmware version at connection and stores firmware_version and library_version (strings, also printed); versions() returns both."
+version: "0.1.13"
+changes: "example_dsp.ipynb: new section 13 transmits/receives on mux element 2 then element 4 (set_one_mux), saves data/mux_elements.png; later sections renumbered 14-16."
