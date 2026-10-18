@@ -59,11 +59,12 @@ without waiting to be asked. A major step is a self-contained change that builds
 a fix, a refactor or rename, a tooling/skill change.
 
 - One logical step per commit. Don't mix a rename with a feature, or firmware and unrelated Python work.
-- The subject is `<area>: <what changed>` (areas: `firmware`, `python`, `hardware`, `repo`, `docs(claude)`). The
+- The subject is `<area>: <what changed>` (areas: `firmware`, `python`, `hardware`, `docs`, `repo`, `docs(claude)`). The
   body says why, and what was verified.
 - Each commit gets its own `.claude/commits/` note and CHANGELOG bullet, and its own patch bump per touched component.
-- **Commits that bump no version** (nothing under `firmware/` or `python/` changed, e.g. `.claude/`, `CLAUDE.md`,
-  README, skills) may be committed directly on `main` and pushed to `origin/main` without asking.
+- **Commits that bump neither the firmware nor the Python version** (nothing under `firmware/` or `python/`
+  changed, e.g. `docs/` with its docs patch bump, `.claude/`, `CLAUDE.md`, README, licenses, skills) may be committed
+  directly on `main` and pushed to `origin/main` without asking.
 - Everything else (a firmware or Python patch bump) goes on a branch off `main` (reuse the current feature branch
   if there is one, otherwise start a new one). **Never commit it to `main` directly and never push or merge it
   without being asked.**
@@ -73,8 +74,9 @@ a fix, a refactor or rename, a tooling/skill change.
 
 1. Add the task to `.claude/TODO.md` if it isn't trivial.
 2. Make the change, then build and verify it.
-3. Bump patch versions for the components you touched (`ultr4rick-versioning`).
-4. Commit the step (see above).
-5. Get the hash (`git log -1 --format=%h`), write the commit note and the CHANGELOG bullet, and move the TODO item to
+3. Update the `docs/` pages the change affects (`ultr4rick-docs`).
+4. Bump patch versions for the components you touched, docs included (`ultr4rick-versioning`).
+5. Commit the step (see above).
+6. Get the hash (`git log -1 --format=%h`), write the commit note and the CHANGELOG bullet, and move the TODO item to
    DONE.md. Commit them as a follow-up `docs(claude): log <hash>` commit, or amend them into the step's commit
    before it's pushed.

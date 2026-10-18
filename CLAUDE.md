@@ -14,6 +14,9 @@ HV mux, an MCP4812 DAC (AFE gain), an LP5562 RGB LED driver on I2C and a uSD slo
 - `python/ultr4rick/` is the host library (serial driver, `U4RK` frame reader, self-test check, NDT analysis +
   HDF5). Notebooks in `python/` write to `python/data/`. Dependencies are in the root `requirements.txt`.
 - `hardware/` holds the KiCad project for the v2 board (schematic sheets per subsystem, PCB, gerbers).
+- `docs/` is the versioned user documentation (`docs/version.yaml`): introduction, setup and first acquisitions,
+  firmware, Python library, repository map. Every code change must be reflected there (`ultr4rick-docs`).
+- Licenses (`LICENSE.md`, `LICENSES/`): hardware TAPR OHL 1.0, firmware and Python GPL-3.0-or-later, docs CC BY-SA 4.0.
 - `TODO.md` (root) is the maintainer's hardware to-do list. `.claude/TODO.md` and `.claude/DONE.md` track Claude's work.
 
 The previous Ultr4rick 1.5 firmware, its `ULTR4RICK_PROTOCOL.md` and `tools/ultr4rick_capture.py`, and the v1
@@ -27,7 +30,8 @@ The procedures live in project skills under `.claude/skills/`:
 - `ultr4rick-build-flash`: build both variants and flash without sudo (`flash.sh`, which uses `reboot-dfu`).
 - `ultr4rick-board-test`: drive the board from `python/ultr4rick`: status, self-test, captures, streaming, safety.
 - `ultr4rick-changelog`: required change logging (`.claude/CHANGELOG.md`, `.claude/commits/`, `.claude/TODO.md`/`DONE.md`).
-- `ultr4rick-versioning`: firmware and Python `major.minor.patch` versions. Claude bumps the patch only.
+- `ultr4rick-versioning`: firmware, Python and docs `major.minor.patch` versions. Claude bumps the patch only.
+- `ultr4rick-docs`: keep `docs/` in step with every code change, and version it.
 
 Short version:
 
@@ -91,8 +95,10 @@ does *not* inherit `pico2.h`: it targets RP2350B, W25Q128 16 MiB flash and a 12 
 
 Log every change in `.claude/CHANGELOG.md`, with a per-commit note in `.claude/commits/`, and keep `.claude/TODO.md`
 / `.claude/DONE.md` current (`ultr4rick-changelog` skill). When committing, bump the patch of every component whose
-files changed (`ultr4rick-versioning` skill); major/minor belong to the maintainer. Commit after each major
-step. Commits that bump no version (no `firmware/` or `python/` change) may go straight to `main` and be pushed.
+files changed (`ultr4rick-versioning` skill); major/minor belong to the maintainer. Every code change also updates
+the `docs/` pages it affects and bumps the docs patch (`ultr4rick-docs` skill). Commit after each major step.
+Commits that bump neither the firmware nor the Python version (no `firmware/` or `python/` change; a docs bump is
+fine) may go straight to `main` and be pushed.
 Anything that bumps the firmware or Python version goes on a branch off `main`; don't commit it to `main`, push or
 merge it without being asked.
 

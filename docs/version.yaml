@@ -1,0 +1,14 @@
+# Ultr4rick documentation version (docs/).
+#
+# Format: A.B.C  (major.minor.patch)  -- same scheme as firmware/ and python/.
+#   A (major)  0-99   -- managed by the maintainer (Luc)
+#   B (minor)  0-99   -- managed by the maintainer (Luc)
+#   C (patch)  0-999  -- bumped by Claude on every change to docs/ pages
+#
+# `changes` is a short, single-line, double-quoted summary of what changed vs
+# the previous version. `firmware` and `python` are the component versions the
+# pages were last checked against.
+version: "0.1.0"
+changes: "First docs set: introduction, setup and first acquisitions, firmware, Python library, repository map."
+firmware: "0.1.15"
+python: "0.1.13"

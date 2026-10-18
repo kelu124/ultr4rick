@@ -14,11 +14,13 @@ The firmware can compute the Hilbert envelope (and A-law compression) of each 40
 
 | Path | Contents |
 |---|---|
+| `docs/` | Documentation: [start here](docs/README.md) (introduction, setup and first acquisitions, firmware, Python library, repository map) |
 | `hardware/` | KiCad project of the v2 board: schematic sheets per subsystem, PCB, gerbers, renders |
 | `firmware/` | Pico SDK C firmware for the RP2350B. Pin map in [`firmware/PINMAP.md`](firmware/PINMAP.md), history in [`firmware/CHANGELOG.md`](firmware/CHANGELOG.md) |
 | `python/` | `ultr4rick` host library, example script and notebooks. See [`python/Readme.md`](python/Readme.md) |
 | `requirements.txt` | Python dependencies for `python/` |
 | `TODO.md` | Hardware changes planned for the next revision |
+| `LICENSE.md`, `LICENSES/` | Licenses per part of the repository |
 
 ## Quick start
 
@@ -56,3 +58,11 @@ frame = probe.read_fft()             # 4096-sample Hilbert envelope
 
 > **Safety:** the pulser generates high voltage. The firmware boots with it disarmed. Only arm it
 > (`pulser arm` / `Ultr4rick.arm_pulser()`) with a transducer connected, and disarm it afterwards.
+
+## License
+
+- Hardware (`hardware/`): [TAPR Open Hardware License v1.0](LICENSES/TAPR-OHL-1.0.txt)
+- Firmware (`firmware/`) and Python (`python/`): [GPL-3.0-or-later](LICENSES/GPL-3.0-or-later.txt)
+- Documentation (`docs/` and the Markdown files): [CC BY-SA 4.0](LICENSES/CC-BY-SA-4.0.txt)
+
+See [`LICENSE.md`](LICENSE.md) for the details and the third-party code.
