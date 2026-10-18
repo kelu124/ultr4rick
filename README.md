@@ -10,6 +10,44 @@ Ultr4rick is an open ultrasound pulse-echo board, the higher-power successor to
 
 The firmware can compute the Hilbert envelope (and A-law compression) of each 4096-sample capture on the board.
 
+## The board
+
+<table>
+  <tr>
+    <td width="50%"><a href="docs/images/v0/v0_front.jpg"><img src="docs/images/v0/v0_front_small.jpg" alt="Front of the board"></a></td>
+    <td width="50%"><a href="docs/images/v0/v0_back.jpg"><img src="docs/images/v0/v0_back_small.jpg" alt="Back of the board"></a></td>
+  </tr>
+  <tr>
+    <td><b>Front.</b> HV supply, pulser, RP2350B and receive front end (AFE). <code>PULSER_OUT</code> and
+      <code>AFE_IN</code> SMA connectors on the right edge, USB-C and uSD on the left.</td>
+    <td><b>Back.</b> The MAX14866 HV mux and the 8 U.FL element connectors (U18–U21, U26–U29).</td>
+  </tr>
+  <tr>
+    <td colspan="2"><a href="docs/images/v0/v0_working.jpg"><img src="docs/images/v0/v0_working_small.jpg" alt="The board running with a transducer"></a></td>
+  </tr>
+  <tr>
+    <td colspan="2"><b>Running.</b> Powered over USB-C (about 0.96 W on the inline meter), with one transducer on
+      <code>PULSER_OUT</code> and <code>AFE_IN</code> through an SMA tee.</td>
+  </tr>
+</table>
+
+The KiCad renders are in [`hardware/Ultr4rick_F.png`](hardware/Ultr4rick_F.png) and
+[`hardware/Ultr4rick_B.png`](hardware/Ultr4rick_B.png). The photos are described in
+[`docs/images/README.md`](docs/images/README.md).
+
+## Acquisition examples
+
+Pulse-echo on the mux: each element in turn on TX and RX with `set_one_mux(k)`, raw ADC trace (top) and on-board
+Hilbert envelope (bottom). Elements 2 and 4 show echo trains: about every 13 µs on element 2 and every 20 µs on element 4. From
+`python/example_dsp.ipynb`, section 13.
+
+![Raw and envelope captures for mux elements 1 to 7](python/data/mux_elements.png)
+
+Idle vs. pulsed capture at gain 50, pulse 96/6000/96 ns: the excitation at 0.9 µs, the receiver recovering until
+about 6 µs, and the envelope computed on the board. From `python/example_dsp.ipynb`, section 15.
+
+![Idle vs. pulsed capture](python/data/pulsed_capture.png)
+
 ## Repository layout
 
 | Path | Contents |
