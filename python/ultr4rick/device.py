@@ -86,6 +86,21 @@ class Ultr4rick:
 
         self.Fech = 60e6  # ADC sampling frequency (Hz)
 
+        # Both version strings, read once at connection time.
+        from ultr4rick import __version__
+        self.library_version = __version__
+        self.firmware_version = "unknown"
+        for _ in range(2):  # retry once if the first reply is lost or partial
+            fw = self.version().get("version")
+            if fw:
+                self.firmware_version = fw
+                break
+        print("Firmware", self.firmware_version, "- library", self.library_version)
+
+    def versions(self):
+        """Return (firmware_version, library_version), both strings."""
+        return self.firmware_version, self.library_version
+
 
     def dac(self, N):
         """Write a value to the 10-bit DAC MCP4812 (write dac).
