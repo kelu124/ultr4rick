@@ -4,6 +4,8 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-18
 
+- [x] `8e6cc43` docs/ folder, docs versioning and the `ultr4rick-docs` skill — [note](commits/2026-10-18-8e6cc43.md)
+- [x] `a857ab0` Licenses (`LICENSE.md`, `LICENSES/`) — [note](commits/2026-10-18-a857ab0.md)
 - [x] Pushed `python-notebook-mux` and fast-forward merged it into `main` (maintainer request).
 - [x] `f69f2ac` Notebook mux section (elements 2 and 4) — [note](commits/2026-10-18-f69f2ac.md)
 - [x] `7104665` Recorded the push-to-main rule for no-version-bump commits — [note](commits/2026-10-18-7104665.md)

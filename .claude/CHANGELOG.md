@@ -6,6 +6,10 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-18
 
+- `8e6cc43` User documentation in `docs/` (intro, setup and first acquisitions, firmware, Python, repo map), docs 0.1.0,
+  new `ultr4rick-docs` skill — [details](commits/2026-10-18-8e6cc43.md)
+- `a857ab0` Licenses: hardware TAPR OHL 1.0, firmware and Python GPL-3.0-or-later, docs CC BY-SA 4.0 —
+  [details](commits/2026-10-18-a857ab0.md)
 - `f69f2ac` `example_dsp.ipynb` section 13: TX/RX on mux element 2, then element 4. Python 0.1.13. —
   [details](commits/2026-10-18-f69f2ac.md)
 - `7104665` Rule: commits that bump no version may go straight to `main` and be pushed — [details](commits/2026-10-18-7104665.md)
