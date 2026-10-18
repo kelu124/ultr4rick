@@ -6,6 +6,7 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-18
 
+- `39a6aa4` Session know-how recorded in CLAUDE.md, ultr4rick-firmware and ultr4rick-board-test (mux wiring, LED, maintainer workflow)
 - `deb6dab` README: board photos and two acquisition examples — [details](commits/2026-10-18-deb6dab.md)
 - `ab9ad86` Removed the stale `.last-verified` file — [details](commits/2026-10-18-ab9ad86.md)
 - `57363af` v0 photos in the docs, `ultr4rick-docs-images` skill, SMA connection, v0 silkscreen error; docs 0.1.1 —
