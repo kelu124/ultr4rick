@@ -4,6 +4,8 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-18
 
+- [x] `6e1fba7` `python/Readme.md` updated, SPDX headers on the Python sources — [note](commits/2026-10-18-6e1fba7.md)
+- [x] `f22f2bb` SPDX headers on the firmware sources, `firmware/CHANGELOG.md` reference fixed — [note](commits/2026-10-18-f22f2bb.md)
 - [x] `6491841` CONTRIBUTING.md adapted, CC BY-SA 4.0 confirmed by the maintainer — [note](commits/2026-10-18-6491841.md)
 - [x] `39a6aa4` Saved the session's know-how into CLAUDE.md and the skills before closing
 - [x] `deb6dab` README photos and acquisition examples — [note](commits/2026-10-18-deb6dab.md)

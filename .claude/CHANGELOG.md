@@ -6,6 +6,10 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-18
 
+- `6e1fba7` Python SPDX headers, Readme documents the mux helpers and `versions()`; Python 0.1.14, docs 0.1.3 —
+  [details](commits/2026-10-18-6e1fba7.md)
+- `f22f2bb` Firmware SPDX headers, CHANGELOG reference fixed; firmware 0.1.16, docs 0.1.2 —
+  [details](commits/2026-10-18-f22f2bb.md)
 - `6491841` CONTRIBUTING.md adapted to Ultr4rick, docs license CC BY-SA 4.0 — [details](commits/2026-10-18-6491841.md)
 - `39a6aa4` Session know-how recorded in CLAUDE.md, ultr4rick-firmware and ultr4rick-board-test (mux wiring, LED, maintainer workflow)
 - `deb6dab` README: board photos and two acquisition examples — [details](commits/2026-10-18-deb6dab.md)

@@ -5,13 +5,9 @@ is the root `TODO.md`. When an item is finished, move it to `DONE.md`.
 
 ## Open
 
+- [ ] 2026-10-18: Flash firmware 0.1.16 and run the standard board check (built, not flashed: board absent).
 - [ ] 2026-10-18: Ask the maintainer how to name the hardware in the docs: the photos folder says "v0", the silkscreen
       and README say "V2.0"/"v2".
-- [ ] 2026-10-18: `python/Readme.md` lacks `set_one_mux`, `mux_element_mask`, `versions()` and the license (needs a Python
-      patch bump, so on a branch). `docs/04-python-library.md` is up to date.
-- [ ] 2026-10-18: Add SPDX headers (`GPL-3.0-or-later`) to the firmware and Python sources (firmware + Python bumps).
-- [ ] 2026-10-18: `firmware/CHANGELOG.md` points to `docs/claude/README.md`, which doesn't exist; fix with the next
-      firmware change.
 - [ ] 2026-10-18: Run `example_dsp.ipynb` section 13 (mux elements 2 and 4) on the board (`f69f2ac`).
 - [ ] 2026-10-18: Check on the board that `Ultr4rick()` prints and stores the firmware version (`0de84ad`); it was not
       enumerated when this was written.
