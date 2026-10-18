@@ -4,6 +4,8 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-18
 
+- [x] `0de84ad` `Ultr4rick()` returns firmware and library version strings — [note](commits/2026-10-18-0de84ad.md)
+- [x] Deleted the merged `python-mux-helpers` branch locally and on origin.
 - [x] Pushed `python-mux-helpers` and fast-forward merged it into `main` (maintainer request).
 - [x] `ebd298c` Python `write_mux()` (any pattern) and `set_one_mux(k)` — [note](commits/2026-10-18-ebd298c.md)
 

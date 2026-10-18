@@ -5,6 +5,8 @@ is the root `TODO.md`. When an item is finished, move it to `DONE.md`.
 
 ## Open
 
+- [ ] 2026-10-18: Check on the board that `Ultr4rick()` prints and stores the firmware version (`0de84ad`); it was not
+      enumerated when this was written.
 - [ ] 2026-10-18: Run `set_one_mux(1..8)` / `write_mux()` on the board (it was not enumerated) and confirm that
       bit n drives SWn: with HV off, `write_mux(0x0001)` should give continuity U18 -> J17 only.
 - [ ] 2026-10-14: Confirm visually that the LED colours (white/green/yellow/blue/magenta/red) and the W LED

@@ -6,6 +6,8 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-18
 
+- `0de84ad` `Ultr4rick()` reads the firmware version at connection and keeps `firmware_version` / `library_version`
+  (strings), plus `versions()`. Python 0.1.12. — [details](commits/2026-10-18-0de84ad.md)
 - `ebd298c` Python mux helpers: `write_mux()` takes any 0..0xFFFF pattern, `set_one_mux(k)` connects element k
   (1..8) to TX+RX, `mux_element_mask()`. Python 0.1.11. — [details](commits/2026-10-18-ebd298c.md)
 
