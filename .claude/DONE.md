@@ -4,6 +4,7 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-18
 
+- [x] `deb6dab` README photos and acquisition examples — [note](commits/2026-10-18-deb6dab.md)
 - [x] `ab9ad86` Removed `.last-verified` — [note](commits/2026-10-18-ab9ad86.md)
 - [x] `57363af` v0 photos in the docs and the image-description skill — [note](commits/2026-10-18-57363af.md)
 - [x] `6bd438b` Committed the maintainer's LICENSE.md / TODO.md / CONTRIBUTING.md edits — [note](commits/2026-10-18-6bd438b.md)
