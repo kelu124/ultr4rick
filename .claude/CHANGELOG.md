@@ -6,6 +6,8 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-18
 
+- `f69f2ac` `example_dsp.ipynb` section 13: TX/RX on mux element 2, then element 4. Python 0.1.13. —
+  [details](commits/2026-10-18-f69f2ac.md)
 - `7104665` Rule: commits that bump no version may go straight to `main` and be pushed — [details](commits/2026-10-18-7104665.md)
 - `0de84ad` `Ultr4rick()` reads the firmware version at connection and keeps `firmware_version` / `library_version`
   (strings), plus `versions()`. Python 0.1.12. — [details](commits/2026-10-18-0de84ad.md)

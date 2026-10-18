@@ -5,6 +5,7 @@ is the root `TODO.md`. When an item is finished, move it to `DONE.md`.
 
 ## Open
 
+- [ ] 2026-10-18: Run `example_dsp.ipynb` section 13 (mux elements 2 and 4) on the board (`f69f2ac`).
 - [ ] 2026-10-18: Check on the board that `Ultr4rick()` prints and stores the firmware version (`0de84ad`); it was not
       enumerated when this was written.
 - [ ] 2026-10-18: Run `set_one_mux(1..8)` / `write_mux()` on the board (it was not enumerated) and confirm that
