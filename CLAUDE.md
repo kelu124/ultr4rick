@@ -70,7 +70,11 @@ Shared modules:
   library.
 - `dsp/protocol.c`: a fixed 64-byte little-endian header with `U4RK` magic. If you change it, update
   `python/ultr4rick/dsp.py` (`HEADER`, `MAGIC`) and bump the versions (see `ultr4rick-versioning`).
-- I2C0 (GPIO24/25) and the uSD pins (GPIO30/31, 40–43) are defined in `hw/u4rk.h` but not driven yet.
+- `hw/led.c`: the LP5562 status LED on I2C0 (GPIO24/25, 100 kHz on internal pull-ups) shows the pipeline stage. The
+  uSD pins (GPIO30/31, 40–43) are defined in `hw/u4rk.h` but not driven yet.
+- Mux wiring (`hardware/MUX.kicad_sch`): element k = 1..8 (U18–U21, U26–U29) goes to RX (`ECHO_IN`) through
+  SW(2k-2) and to TX through SW(2k-1); `set_one_mux(k)` = `3 << 2(k-1)`. The SMA edge connectors `PULSER_OUT` (J1)
+  and `AFE_IN` (J2) bypass the mux. The v0 silkscreen labels U26–U29 TR4–TR7 (should be TR5–TR8).
 
 The image runs from SRAM (`pico_set_binary_type(copy_to_ram)`, about 270 KB of 520 KB used). Keep an eye on SRAM when adding
 buffers. The board definition is `firmware/boards/ultr4rick.h` (`PICO_BOARD=ultr4rick`, forced in CMake). It deliberately
@@ -113,4 +117,8 @@ merge it without being asked.
   once it's merged and the maintainer asks to trim, delete it locally and on `origin`.
 - Ask before killing processes you didn't start (e.g. a serial monitor from another session holding the port).
 - KiCad must be closed before moving or renaming anything under `hardware/`.
+- The maintainer often edits or adds files during a session (images, `TODO.md`, `LICENSE.md`). "Commit all" includes
+  them: commit them as-is, in their own commit, separate from Claude's work.
+- The maintainer may send extra requests while a turn is running; fold them into the current work.
+- Open questions for the maintainer are in `.claude/TODO.md` (e.g. CC BY-SA 3.0 vs 4.0, "v0" vs silkscreen "V2.0").
 - Related boards: pic0rick (RP2040, this firmware's ancestor) and we_gate (ECP5 FPGA) live in other repos.

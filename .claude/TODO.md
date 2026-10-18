@@ -5,6 +5,8 @@ is the root `TODO.md`. When an item is finished, move it to `DONE.md`.
 
 ## Open
 
+- [ ] 2026-10-18: Ask the maintainer how to name the hardware in the docs: the photos folder says "v0", the silkscreen
+      and README say "V2.0"/"v2".
 - [ ] 2026-10-18: `python/Readme.md` lacks `set_one_mux`, `mux_element_mask`, `versions()` and the license (needs a Python
       patch bump, so on a branch). `docs/04-python-library.md` is up to date.
 - [ ] 2026-10-18: Add SPDX headers (`GPL-3.0-or-later`) to the firmware and Python sources (firmware + Python bumps).

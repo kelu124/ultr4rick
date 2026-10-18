@@ -26,7 +26,8 @@ python3 -m venv $SCRATCH/venv && $SCRATCH/venv/bin/pip install -r requirements.t
 ```python
 from ultr4rick.device import Ultr4rick
 from ultr4rick import dsp
-p = Ultr4rick(verbose=False)
+p = Ultr4rick(verbose=False)            # prints "Firmware <fw> - library <lib>"
+print(p.versions())                      # (firmware_version, library_version), read at connection
 print(p.version())                       # version, board ultr4rick, chip RP2350B, mux enabled, build hash
 st = p.status(); assert not st["pulser_armed"]; print(st["raw"])
 print(p.command("dac write 300"), p.command("write mux 0"), p.command("clear mux"))
@@ -59,6 +60,10 @@ assert not p.status()["pulser_armed"]
 - Assume the high-voltage supply may be connected.
 
 ## Known results
+- 2026-10-18, maintainer's run of `example_dsp.ipynb` mux section with elements 1–7 (`e199deb`,
+  `python/data/mux_elements.png`): echo trains on element 2 (~13 µs spacing) and element 4 (~20 µs), nothing on the
+  others. Transducers can also go on the SMA `PULSER_OUT`/`AFE_IN` connectors with a tee, mux cleared
+  (`docs/images/v0/v0_working.jpg`).
 - 2026-10-14, firmware 0.1.15 (runs from SRAM):
   - One-shot envelope `dsp_us` 6.55 ms (FFTs 2.3/2.6 ms), worst with A-law 7.3 ms.
   - Streams: 20 Hz envelope and 70 Hz A-law sustain with ≤ 1 drop. 50 Hz envelope drops ~25% (USB-bound).

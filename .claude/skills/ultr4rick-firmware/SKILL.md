@@ -54,7 +54,20 @@ The tick is 8 ns, and each phase needs at least 40 ns.
   nLE, and it must never pulse nLE first (that would latch leftover DAC bits).
 - Wire identity: USB `cafe:4011` (DSP) / `2e8a:0009` (stdio), strings `Ultr4rick…`, serial `U4RK0001`, frame
   magic `U4RK`. The header layout must stay in sync with `python/ultr4rick/dsp.py`.
-- I2C0 and the uSD pins are defined but **not driven** yet. PIO access to GPIO40–43 needs
+- I2C0 drives the LP5562 status LED (`hw/led.c`). The uSD pins are defined but **not driven** yet. PIO access to GPIO40–43 needs
   `pio_set_gpio_base(pio, 16)` on a PIO block other than PIO0 (ADC, base 0).
+
+## MAX14866 mux wiring (from the `hardware/MUX.kicad_sch` netlist, U17)
+
+- Even COMs (0, 2, … 14) join `MUX_IN` -> R77 (0 Ω) -> `ECHO_IN` (receiver, also SMA `AFE_IN` J2, U.FL RF4, pin J17).
+- Odd COMs (1, 3, … 15) join `MUX_OUT` -> R78 (0 Ω) -> `TX` (pulser, also SMA `PULSER_OUT` J1, U.FL RF5, pin J18).
+- NO(2k-2) and NO(2k-1) both go to element k's U.FL: k = 1..4 -> U18–U21, k = 5..8 -> U26–U29. So bit 2(k-1) = RX,
+  bit 2(k-1)+1 = TX, assuming bit n drives SWn (MSB first). The maintainer's run in `e199deb` gave echoes on the
+  elements expected, which is consistent with that order.
+- DOUT goes only to TP3 (no read-back). `set mux` closes everything: TX shorted to `ECHO_IN`, all elements in parallel.
+- v0 silkscreen error: U26–U29 read TR4, TR5, TR6, TR7 (should be TR5–TR8), so TR4 appears twice.
+- Python: `write_mux(0..0xFFFF)`, `set_one_mux(k)`, `Ultr4rick.mux_element_mask(k, tx, rx)`.
+
+Every firmware change also updates `docs/03-firmware.md` (`ultr4rick-docs`).
 
 Build and flash: `ultr4rick-build-flash`. Test: `ultr4rick-board-test`.
