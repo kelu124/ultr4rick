@@ -4,6 +4,11 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 [`commits/`](commits/). The convention is in `.claude/skills/ultr4rick-changelog/SKILL.md`. Open and finished actions are in
 [`TODO.md`](TODO.md) / [`DONE.md`](DONE.md).
 
+## 2026-10-18
+
+- `ebd298c` Python mux helpers: `write_mux()` takes any 0..0xFFFF pattern, `set_one_mux(k)` connects element k
+  (1..8) to TX+RX, `mux_element_mask()`. Python 0.1.11. — [details](commits/2026-10-18-ebd298c.md)
+
 ## 2026-10-15
 
 - `b16e8b2` Move Claude's private memory into CLAUDE.md and skills — [details](commits/2026-10-15-b16e8b2.md)

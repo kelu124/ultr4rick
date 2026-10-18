@@ -2,6 +2,10 @@
 
 Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
+## 2026-10-18
+
+- [x] `ebd298c` Python `write_mux()` (any pattern) and `set_one_mux(k)` — [note](commits/2026-10-18-ebd298c.md)
+
 ## 2026-10-15
 
 - [x] `b16e8b2` Saved Claude's memory into `CLAUDE.md` and skills — [note](commits/2026-10-15-b16e8b2.md)
