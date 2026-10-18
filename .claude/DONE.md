@@ -4,6 +4,7 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-18
 
+- [x] Pushed `python-mux-helpers` and fast-forward merged it into `main` (maintainer request).
 - [x] `ebd298c` Python `write_mux()` (any pattern) and `set_one_mux(k)` — [note](commits/2026-10-18-ebd298c.md)
 
 ## 2026-10-15
