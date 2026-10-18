@@ -32,6 +32,7 @@ ultr4rick/
 | `01-…` to `05-…` | the pages |
 | [`version.yaml`](version.yaml) | docs version, and the firmware / Python versions the pages were checked against |
 | [`CHANGELOG.md`](CHANGELOG.md) | docs history |
+| [`images/`](images/README.md) | photos, one folder per hardware version, each described in `images/README.md` |
 
 ## `firmware/`
 
@@ -82,7 +83,7 @@ KiCad must be closed before you move or rename anything here.
 
 | Path | Contents |
 |---|---|
-| `skills/` | procedures: firmware, build and flash, board test, change logging, versioning, docs |
+| `skills/` | procedures: firmware, build and flash, board test, change logging, versioning, docs, docs images |
 | `CHANGELOG.md`, `commits/` | log of the changes made with Claude Code |
 | `TODO.md`, `DONE.md` | Claude's open and finished tasks |
 

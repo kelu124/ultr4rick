@@ -16,6 +16,7 @@ description: Keep the Ultr4rick user documentation in docs/ (introduction, setup
 | `04-python-library.md` | `Ultr4rick` methods per build, mux helpers, `dsp`, `ndt_acquisition`, examples |
 | `05-repository-map.md` | every folder and the main files, licenses |
 | `version.yaml`, `CHANGELOG.md` | docs version and history |
+| `images/` | photos, one folder per hardware version; every image is described in `images/README.md` (`ultr4rick-docs-images`) |
 
 ## Rule: every code change is reflected in the docs
 

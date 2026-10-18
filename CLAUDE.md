@@ -32,6 +32,7 @@ The procedures live in project skills under `.claude/skills/`:
 - `ultr4rick-changelog`: required change logging (`.claude/CHANGELOG.md`, `.claude/commits/`, `.claude/TODO.md`/`DONE.md`).
 - `ultr4rick-versioning`: firmware, Python and docs `major.minor.patch` versions. Claude bumps the patch only.
 - `ultr4rick-docs`: keep `docs/` in step with every code change, and version it.
+- `ultr4rick-docs-images`: every image in `docs/images/` is described in `docs/images/README.md`.
 
 Short version:
 

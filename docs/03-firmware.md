@@ -72,19 +72,21 @@ SPI1 (SCK GPIO26, DIN GPIO27, mode 0, 2 MHz) is shared by two chips:
 
 Mux bit *n* drives switch SW*n*. The switches are wired in pairs:
 
-| Element | Connector | RX switch (to the receiver) | TX switch (to the pulser) | TX+RX pattern |
-|---|---|---|---|---|
-| 1 | U18 | SW0 | SW1 | `0x0003` |
-| 2 | U19 | SW2 | SW3 | `0x000C` |
-| 3 | U20 | SW4 | SW5 | `0x0030` |
-| 4 | U21 | SW6 | SW7 | `0x00C0` |
-| 5 | U26 | SW8 | SW9 | `0x0300` |
-| 6 | U27 | SW10 | SW11 | `0x0C00` |
-| 7 | U28 | SW12 | SW13 | `0x3000` |
-| 8 | U29 | SW14 | SW15 | `0xC000` |
+| Element | Connector | v0 silkscreen | RX switch (to the receiver) | TX switch (to the pulser) | TX+RX pattern |
+|---|---|---|---|---|---|
+| 1 | U18 | TR1 | SW0 | SW1 | `0x0003` |
+| 2 | U19 | TR2 | SW2 | SW3 | `0x000C` |
+| 3 | U20 | TR3 | SW4 | SW5 | `0x0030` |
+| 4 | U21 | TR4 | SW6 | SW7 | `0x00C0` |
+| 5 | U26 | TR4 (wrong) | SW8 | SW9 | `0x0300` |
+| 6 | U27 | TR5 (wrong) | SW10 | SW11 | `0x0C00` |
+| 7 | U28 | TR6 (wrong) | SW12 | SW13 | `0x3000` |
+| 8 | U29 | TR7 (wrong) | SW14 | SW15 | `0xC000` |
 
 This comes from the netlist of `hardware/MUX.kicad_sch`: even COMs join `MUX_IN` (the receive input, `ECHO_IN`),
-odd COMs join `MUX_OUT` (the pulser output, `TX`).
+odd COMs join `MUX_OUT` (the pulser output, `TX`). The pulser output and the receiver input also go to the SMA edge
+connectors `PULSER_OUT` (J1) and `AFE_IN` (J2), which don't depend on the mux. The
+[back photo](images/v0/v0_back.jpg) shows the element connectors.
 
 ### DSP pipeline (`dsp/dsp.c`, `dsp/pipeline.c`)
 

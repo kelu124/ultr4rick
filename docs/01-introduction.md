@@ -24,6 +24,11 @@ depth in water (1480 m/s) or about 400 mm in steel (5950 m/s).
 
 ## What is on the board
 
+[![Front of a v0 board: HV, PULSER, MCU and AFE blocks](images/v0/v0_front_small.jpg)](images/v0/v0_front.jpg)
+
+*Front of a v0 board. The silkscreen marks the HV supply, the pulser, the MCU and the receive front end (AFE).
+`PULSER_OUT` and `AFE_IN` are the SMA connectors on the right edge. USB-C and the uSD slot are on the left.*
+
 ```mermaid
 flowchart LR
     PC[Computer<br/>Python library] <-->|USB| MCU[RP2350B<br/>microcontroller]
@@ -56,6 +61,15 @@ connects it to the pulser (TX), the other to the receiver (RX). With both closed
 transducer. With TX on one element and RX on another you do pitch-catch with two transducers.
 [Setup](02-setup-first-acquisitions.md#select-an-element-on-the-mux) and
 [Python library](04-python-library.md#mux) show how to select them.
+
+[![Back of a v0 board: the MAX14866 and the 8 U.FL element connectors](images/v0/v0_back_small.jpg)](images/v0/v0_back.jpg)
+
+*Back of a v0 board: the MAX14866 mux (U17) with the element connectors U18–U21 (elements 1–4, silkscreen TR1–TR4)
+at the bottom and U26–U29 (elements 5–8) at the top. On v0 the top row is mislabelled TR4–TR7: go by the U number.*
+
+The board also has two SMA connectors on its edge that bypass the element selection: `PULSER_OUT` (J1) is the
+pulser output and `AFE_IN` (J2) the receiver input. A single transducer on both, through a tee, does pulse-echo
+with the mux left open.
 
 ## Two firmware builds
 

@@ -6,8 +6,17 @@ written on Ubuntu; macOS and Windows work for the Python side with the usual cha
 ## What you need
 
 - An Ultr4rick v2 board and a USB cable.
-- A transducer (for example a 5 MHz contact probe) with a U.FL connection, plugged into one of the element
-  connectors 1–8 (U18, U19, U20, U21, U26, U27, U28, U29 on the PCB). Use couplant gel on the part you measure.
+- A transducer (for example a 5 MHz contact probe), and couplant gel for the part you measure. Connect it in one
+  of two ways:
+  - **Through the SMA edge connectors**: `PULSER_OUT` (J1) and `AFE_IN` (J2), joined to the transducer with an SMA
+    tee. This is the simplest setup and doesn't use the mux (photo below).
+  - **Through the mux**: on one of the U.FL element connectors 1–8 on the back (U18, U19, U20, U21, U26, U27, U28,
+    U29). On v0 boards, U26–U29 are silkscreened TR4–TR7 by mistake: they are elements 5–8.
+
+[![A v0 board powered over USB-C with a transducer on PULSER_OUT and AFE_IN](images/v0/v0_working_small.jpg)](images/v0/v0_working.jpg)
+
+*A v0 board running: USB-C power through an inline meter (about 5.2 V, 0.19 A, 0.96 W), and one transducer
+connected to `PULSER_OUT` and `AFE_IN` through an SMA tee.*
 - Python 3.10 or newer.
 - To build the firmware yourself: the Pico SDK 2.3.0, `arm-none-eabi-gcc`, CMake and Ninja.
 
@@ -87,7 +96,9 @@ You should see a flat trace around code 512 with a little noise.
 
 ## Select an element on the mux
 
-Choose which connector transmits and receives. `set_one_mux(k)` connects element *k* (1..8) to both TX and RX:
+Skip this step if your transducer is on the `PULSER_OUT` / `AFE_IN` SMA connectors: leave the mux cleared.
+For a transducer on a U.FL element connector, choose which element transmits and receives. `set_one_mux(k)`
+connects element *k* (1..8) to both TX and RX:
 
 ```python
 probe.set_one_mux(1)     # transducer on element 1 (U18): pulse-echo on that element
