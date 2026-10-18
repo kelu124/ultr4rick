@@ -10,3 +10,5 @@
   pinout: 4 = SDA, 5 = SCL).
 - Add I2C pull-ups on I2C0 (GPIO24/25). The v2 schematic has none on SDA/SCL. The firmware runs the LP5562 at 100 kHz
   on the RP2350's internal pull-ups, which works but is marginal.
+- There are two TR4 on the silkscreen in the back
+

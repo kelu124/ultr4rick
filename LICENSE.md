@@ -10,7 +10,7 @@ The full texts are in [`LICENSES/`](LICENSES/).
 | Python library, scripts and notebooks | `python/` | GNU General Public License v3.0 or later (`GPL-3.0-or-later`) | [`LICENSES/GPL-3.0-or-later.txt`](LICENSES/GPL-3.0-or-later.txt) |
 | Documentation | `docs/`, the Markdown files at the root and in the other folders | Creative Commons Attribution-ShareAlike 4.0 International (`CC-BY-SA-4.0`) | [`LICENSES/CC-BY-SA-4.0.txt`](LICENSES/CC-BY-SA-4.0.txt) |
 
-Copyright © the Ultr4rick contributors.
+Copyright © kelu124
 
 The firmware and Python code are free software: you can redistribute them and/or modify them under the terms of the
 GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at
