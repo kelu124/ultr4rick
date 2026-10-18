@@ -7,5 +7,5 @@
 #
 # `changes` is a short, single-line, double-quoted summary of what changed vs
 # the previous version. Exposed as ultr4rick.__changes__.
-version: "0.1.10"
-changes: "Repo cleanup: references follow embarke/ -> firmware/ and the board rename embarke -> ultr4rick (docs, docstrings, example_dsp). No API change."
+version: "0.1.11"
+changes: "Mux helpers: write_mux() takes any 0..0xFFFF pattern (int or hex string, range-checked); set_one_mux(k) connects element k (1..8) to TX+RX; mux_element_mask(k, tx, rx)."

@@ -177,19 +177,43 @@ class Ultr4rick:
         return ans
 
     def write_mux(self, value):
-        """Load the MAX14866 mux shift register (write mux).
+        """Load any 16-bit pattern into the MAX14866 mux (write mux).
+
+        Bit n closes switch SWn. On the v2 board the switches work in pairs:
+        element k (1..8, U.FL U18-U21, U26-U29) goes to RX (ECHO_IN) through
+        SW(2k-2) and to TX (pulser) through SW(2k-1). See set_one_mux().
 
         Firmware parses the argument as hexadecimal (strtol base 16), so an int
-        is sent as an uppercase hex string. A string is passed through verbatim,
-        allowing an explicit "0x" prefix if desired.
+        (any base, e.g. 3, 0x0003, 0b11) is sent as an uppercase hex string.
+        A string is taken as hex ("FFFF" or "0xFFFF").
 
         Args:
-            value: mux pattern as an int, or a hex string (e.g. 0xFFFF or "FFFF").
+            value: mux pattern 0..0xFFFF, as an int or a hex string.
         """
-        arg = format(value, "X") if isinstance(value, int) else str(value)
+        if isinstance(value, str):
+            value = int(value, 16)
+        value = int(value)
+        if not 0 <= value <= 0xFFFF:
+            raise ValueError(f"mux pattern must be 0..0xFFFF, got {value:#x}")
+        arg = format(value, "04X")
         self.ser.write(bytearray("write mux " + arg + "\n", "ascii"))
         ans = self.sread()
         return ans
+
+    @staticmethod
+    def mux_element_mask(k, tx=True, rx=True):
+        """Return the mux pattern connecting element k (1..8) to TX and/or RX."""
+        if not 1 <= int(k) <= 8:
+            raise ValueError(f"element must be 1..8, got {k}")
+        shift = 2 * (int(k) - 1)
+        return (int(bool(rx)) << shift) | (int(bool(tx)) << (shift + 1))
+
+    def set_one_mux(self, k):
+        """Connect element k (1..8) to both TX and RX, all other switches open.
+
+        Element 1 -> 0x0003, element 2 -> 0x000C, ..., element 8 -> 0xC000.
+        """
+        return self.write_mux(self.mux_element_mask(k))
 
     def set_mux(self):
         """Pulse the MAX14866 SET line, enabling all switches (set mux)."""
