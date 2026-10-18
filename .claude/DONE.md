@@ -4,6 +4,9 @@ Finished actions, newest first (convention: `ultr4rick-changelog` skill).
 
 ## 2026-10-18
 
+- [x] `ab9ad86` Removed `.last-verified` — [note](commits/2026-10-18-ab9ad86.md)
+- [x] `57363af` v0 photos in the docs and the image-description skill — [note](commits/2026-10-18-57363af.md)
+- [x] `6bd438b` Committed the maintainer's LICENSE.md / TODO.md / CONTRIBUTING.md edits — [note](commits/2026-10-18-6bd438b.md)
 - [x] `8e6cc43` docs/ folder, docs versioning and the `ultr4rick-docs` skill — [note](commits/2026-10-18-8e6cc43.md)
 - [x] `a857ab0` Licenses (`LICENSE.md`, `LICENSES/`) — [note](commits/2026-10-18-a857ab0.md)
 - [x] Pushed `python-notebook-mux` and fast-forward merged it into `main` (maintainer request).

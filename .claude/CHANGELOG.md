@@ -6,6 +6,10 @@ Changes made with Claude Code in this repo. Newest first. Each entry links to a 
 
 ## 2026-10-18
 
+- `ab9ad86` Removed the stale `.last-verified` file — [details](commits/2026-10-18-ab9ad86.md)
+- `57363af` v0 photos in the docs, `ultr4rick-docs-images` skill, SMA connection, v0 silkscreen error; docs 0.1.1 —
+  [details](commits/2026-10-18-57363af.md)
+- `6bd438b` Maintainer edits committed: copyright holder, TODO item, CONTRIBUTING.md — [details](commits/2026-10-18-6bd438b.md)
 - `8e6cc43` User documentation in `docs/` (intro, setup and first acquisitions, firmware, Python, repo map), docs 0.1.0,
   new `ultr4rick-docs` skill — [details](commits/2026-10-18-8e6cc43.md)
 - `a857ab0` Licenses: hardware TAPR OHL 1.0, firmware and Python GPL-3.0-or-later, docs CC BY-SA 4.0 —

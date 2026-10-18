@@ -8,7 +8,7 @@ is the root `TODO.md`. When an item is finished, move it to `DONE.md`.
 - [ ] 2026-10-18: `python/Readme.md` lacks `set_one_mux`, `mux_element_mask`, `versions()` and the license (needs a Python
       patch bump, so on a branch). `docs/04-python-library.md` is up to date.
 - [ ] 2026-10-18: Add SPDX headers (`GPL-3.0-or-later`) to the firmware and Python sources (firmware + Python bumps).
-- [ ] 2026-10-18: `CONTRIBUTING.md` (untracked, maintainer's) is pic0rick text and says CC BY-SA 3.0; align with
+- [ ] 2026-10-18: `CONTRIBUTING.md` (maintainer's, committed in 6bd438b) is pic0rick text and says CC BY-SA 3.0; align with
       `LICENSE.md` (4.0) once the maintainer decides.
 - [ ] 2026-10-18: `firmware/CHANGELOG.md` points to `docs/claude/README.md`, which doesn't exist; fix with the next
       firmware change.
