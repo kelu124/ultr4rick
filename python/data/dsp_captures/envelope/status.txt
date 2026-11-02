@@ -11,10 +11,10 @@ ultr4rick status
   dropped frames   0
   DSP stage times (us):
       preprocess   534
-      forward_fft  2263
-      mask         149
+      forward_fft  2258
+      mask         148
       inverse_fft  2566
       magnitude    1038
       alaw         0
-  dsp_us / worst   6550 / 7322 (over-budget)
+  dsp_us / worst   6545 / 7315 (over-budget)
   max rates (Hz)   envelope 50, alaw 70

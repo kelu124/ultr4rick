@@ -2,17 +2,17 @@
   "version": 1,
   "payload_type": 2,
   "flags": 16,
-  "sequence": 354,
+  "sequence": 96,
   "sample_count": 4096,
   "sample_rate_hz": 60000000,
   "payload_bytes": 16384,
-  "capture_timestamp_us": 799041020,
-  "adc_dc_mean": 513.081298828125,
-  "envelope_peak": 693.9722290039062,
+  "capture_timestamp_us": 196508940,
+  "adc_dc_mean": 516.644775390625,
+  "envelope_peak": 989.4195556640625,
   "alaw_reference": 512.0,
   "negative_ns": 96,
   "damp_ns": 6000,
   "positive_ns": 96,
   "dropped_frames": 0,
-  "payload_crc32": 1884642046
+  "payload_crc32": 2115643944
 }
